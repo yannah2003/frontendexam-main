@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <div class="container bg-light p-4 border rounded-bottom">
@@ -33,14 +34,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in filteredItems" :key="item.lrn">
+          <tr v-for="(item, index) in filteredItems" :key="item.idnumber">
             <td class="text-center">{{ index + 1 }}</td>
-            <td class="text-center">{{ item.lrn }}</td>
-            <td class="text-center">{{ item.username }}</td>
+            <td class="text-center">{{ item.idnumber }}</td>
+            <td class="text-center">{{ item.lname}},{{ item.fname}} {{ item.mname}}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.usertype }}</td>
-            <td class="text-center">{{ item.dateregistered }}</td>
+            <td class="text-center">{{ item.created_at }}</td>
             <td class="text-center">
               <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
               <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
@@ -81,11 +82,11 @@
                 <div class="col-md-4">
                   <label class="form-label d-block">Gender:</label>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.sex">
                     <label class="form-check-label" for="male">Male</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.sex">
                     <label class="form-check-label" for="female">Female</label>
                   </div>
                 </div>
@@ -142,64 +143,147 @@ export default {
     },
   },
   methods: {
-    async loadItems() {
-      try {
-        const token = localStorage.getItem('userToken');
-        const response = await axios.get('http://localhost:8000/api/userResourceCollection', {
-          headers: { 'Authorization': `Bearer ${token}` }
+    fetchData() {//////////fetch
+      axios.get('http://localhost:8000/api/users')
+        .then(response => {
+          this.serverItems = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
         });
-        this.serverItems = response.data.map(user => ({
-          lrn: user.idnumber,
-          username: user.fname,
-          sex: user.sex,
-          email: user.email,
-          usertype: user.usertype,
-          dateregistered: user.created_at
-        }));
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
     },
-    openModal(item) {
-      this.currentUser = { ...item }; // Populate the modal with user data
+    openModal(user) {
+      this.currentUser = { ...user };
       this.showModal = true;
     },
-    async removeUser(item) {
-      try {
-        const token = localStorage.getItem('userToken');
-        await axios.delete(`http://localhost:8000/api/users/${item.lrn}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        this.serverItems = this.serverItems.filter(user => user.lrn !== item.lrn);
-      } catch (error) {
-        console.error('Error removing user:', error);
+    saveChanges() {
+      if (this.currentUser.id) {
+        axios.put(`/api/users/${this.currentUser.id}`, this.currentUser)
+          .then(() => {
+            this.fetchData();
+            this.showModal = false;
+          })
+          .catch(error => {
+            console.error('Error saving changes:', error);
+          });
+      } else {
+        axios.post('/api/users', this.currentUser)
+          .then(() => {
+            this.fetchData();
+            this.showModal = false;
+          })
+          .catch(error => {
+            console.error('Error saving changes:', error);
+          });
       }
     },
-    async saveChanges() {
-      try {
-        const token = localStorage.getItem('userToken');
-        if (this.currentUser.lrn) {
-          await axios.put(`http://localhost:8000/api/users/${this.currentUser.lrn}`, this.currentUser, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-        } else {
-          await axios.post('http://localhost:8000/api/users', this.currentUser, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-        }
-        this.loadItems(); // Reload the users after saving
-        this.showModal = false;
-      } catch (error) {
-        console.error('Error saving changes:', error);
-      }
+    removeUser(user) {
+      axios.delete(`/api/users/${user.id}`)
+        .then(() => {
+          this.fetchData();
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error);
+        });
     }
   },
   mounted() {
-    this.loadItems(); // Load items when component is mounted
+    this.fetchData();
   }
 };
 </script>
 
 <style scoped>
-/* Your existing styles */
+.container {
+  margin-top: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+h4 {
+  background-color:#8FD6A4;
+  color: rgb(6, 0, 0);
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  font-family: 'Georgia', serif;
+  margin-bottom: 20px;
+}
+
+.custom-icon {
+  cursor: pointer;
+  color: black;
+  font-size: 25px;
+}
+
+.custom-icon:hover {
+  color: rgb(18, 211, 173);
+  font-size: 30px;
+}
+
+.form-select {
+  width: 200px;
+}
+.modal-content {
+  border: 2px solid #28a745; /* Green border */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.modal-header {
+  background-color:#50C878; /* Green header background */
+  color: #130404;
+  border-bottom: 1px solid #ddd; /* Light border below header */
+}
+
+.modal-title {
+  font-size: 1.25rem; /* Larger font size for the title */
+  font-weight: bold;
+}
+
+.btn-close {
+  filter: invert(1); /* White close button icon */
+}
+
+.modal-body {
+  background-color: #f8f9fa; /* Light grey background for form */
+}
+
+.input-group-text {
+  background-color: #e9ecef; /* Light grey background for input labels */
+  border: 1px solid #ced4da; /* Light border around input labels */
+  color: #495057; /* Dark grey text color */
+}
+
+.form-control {
+  border-radius: 5px; /* Rounded corners for input fields */
+  border: 1px solid #ced4da; /* Light border around input fields */
+}
+
+.form-control:focus {
+  border-color: #28a745; /* Green border on focus */
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green shadow on focus */
+}
+
+.modal-footer {
+  border-top: 1px solid #ddd; /* Light border above footer */
+}
+
+.btn-secondary {
+  background-color: #6c757d; /* Grey background for secondary button */
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268; /* Darker grey on hover */
+}
+
+.btn-primary {
+  background-color: #28a745; /* Green background for primary button */
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #218838; /* Darker green on hover */
+}
 </style>
