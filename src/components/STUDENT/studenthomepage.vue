@@ -12,8 +12,14 @@
           <div v-if="isPopoverVisible" class="popover show" role="tooltip">
             <div class="popover-arrow"></div>
             <div class="popover-body">
-              <strong>Username:</strong> student@gmail.com
-              <br />
+              <div class="field-container" v-if="userProfile">
+                <span>ID number: {{ userProfile.idnumber }}</span>
+                <i class="fas fa-edit" @click="editIdNumber"></i>
+              </div>
+              <div class="field-container" v-if="userProfile">
+                <span>NAME: {{ userProfile.lname }}</span>
+                <i class="fas fa-edit" @click="editName"></i>
+              </div>
               <button class="btn btn-danger btn-sm mt-2" @click="handleLogoutClick">Log Out</button>
             </div>
           </div>
@@ -35,9 +41,6 @@
             <span class="label">{{ item.label }}</span>
           </span>
         </router-link>
-
-        
-
         <div class="list-group logOut" @click="handleLogoutClick" style="margin-top: 200px;">
           <span class="icon-label">
             <i class="bi bi-box-arrow-left fs-4"></i> LOG OUT
@@ -52,6 +55,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'Student_homepage',
   props: {
@@ -66,6 +71,10 @@ export default {
       isPopoverVisible: false,
       isDropdownVisible: false,
       selectedItem: '',
+      userProfile: {
+        idnumber: '',
+        lname: ''
+      },
       items: [
         { path: '/sdashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
         { path: '/saddsubject', label: 'Add Subjects', icon: 'bi bi-file-earmark-plus-fill fs-4' },
@@ -76,6 +85,42 @@ export default {
     };
   },
   methods: {
+    checkLoginStatus() {
+      const token = localStorage.getItem('token');
+      this.isLoggedIn = !!token;
+    },
+    async fetchUserProfile() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/userprofile', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        this.userProfile = response.data.data || { idnumber: '', lname: '' }; // Ensure fallback in case of missing data
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+        this.userProfile = { idnumber: '', lname: '' }; // Fallback if fetch fails
+      }
+    },
+    async handleLogoutClick() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:8000/api/logout', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log(response.data.message);
+        localStorage.removeItem('token');
+        localStorage.removeItem('selectedItem'); // Clear selected item on logout
+        this.isLoggedIn = false;
+        this.userProfile = { idnumber: '', lname: '' }; // Clear user profile on logout
+        this.$emit('logout');
+        this.$router.push('/login'); // Redirect to login page after logout
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    },
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible;
     },
@@ -97,16 +142,15 @@ export default {
       this.isPopoverVisible = false;
       this.isDropdownVisible = false;
     },
-    handleLogoutClick() {
-      this.$emit('logout');
-    },
   },
-  beforeMount() {
+  mounted() {
+    this.fetchUserProfile(); // Fetch user profile when component is mounted
     this.$router.push('/sdashboard');
     this.selectedItem = '/sdashboard';
   },
 };
 </script>
+
 <style scoped>
 .logo {
   font-family: 'Segoe UI Black', sans-serif;
@@ -181,8 +225,8 @@ export default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 10px;
   width: 200px;
-  top: 50px;
-  left: -210px; /* Positioning to the left of the profile icon */
+  top: 50px; /* Adjust this value based on where you want it to appear */
+  left: -210px; /* Adjust this value to position it relative to the profile icon */
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -190,6 +234,23 @@ export default {
 .popover.show {
   opacity: 1;
   transform: translateX(0);
+}
+
+.popover-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px; /* Adjust as needed */
+}
+
+.field-container i {
+  margin-left: 10px; /* Adjust spacing as needed */
+  cursor: pointer;
 }
 
 .popover-arrow {
@@ -200,7 +261,7 @@ export default {
   border-style: solid;
   border-color: white transparent transparent transparent;
   top: 50%;
-  right: 100%; /* Position the arrow on the left side */
+  right: 100%; /* Position the arrow on the left side of the popover */
   transform: translateY(-50%);
 }
 

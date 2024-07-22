@@ -1,83 +1,83 @@
 <template>
   <div>
     <h3>DASHBOARD</h3>
-      <div class="row mb-3" style=" margin: 10px">
-        <!-- Chart Section -->
-        <div class="col-lg-8 col-md-12">
-          <div class="graph">
-            <h5>TOTAL NUMBER OF SENIOR HIGH SCHOOL STUDENTS: {{ totalStudents }}</h5>
-            <b-card class="graph-card">
-              <div class="chart-container">
-                <BarChart :data="chartData" :options="chartOptions" />
-              </div>
-            </b-card>
+    <div class="row mb-3" style="margin: 10px">
+      <!-- Chart Section -->
+      <div class="col-lg-8 col-md-12">
+        <div class="graph">
+          <h5>TOTAL NUMBER OF SENIOR HIGH SCHOOL STUDENTS: {{ totalStudents }}</h5>
+          <b-card class="graph-card">
+            <div class="chart-container">
+              <BarChart :data="chartData" :options="chartOptions" />
+            </div>
+          </b-card>
+        </div>
+      </div>
+      <!-- Statistics Section -->
+      <div class="col-lg-4 col-md-12 count">
+        <div class="row">
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ stemStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>STEM</b> STUDENTS</span>
+              </center>
+            </div>
+          </div>
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ abmStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>ABM</b> STUDENTS</span>
+              </center>
+            </div>
           </div>
         </div>
-        <!-- Statistics Section -->
-        <div class="col-lg-4 col-md-12 count">
-          <div class="row">
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ stemStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>STEM</b> STUDENTS</span>
-                </center>
-              </div>
-            </div>
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ abmStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>ABM</b> STUDENTS</span>
-                </center>
-              </div>
+        <div class="row">
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ hummsStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>HUMMS</b> STUDENTS</span>
+              </center>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ hummsStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>HUMMS</b> STUDENTS</span>
-                </center>
-              </div>
-            </div>
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ tvlictStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>TVL-ICT</b> STUDENTS</span>
-                </center>
-              </div>
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ tvlictStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>TVL-ICT</b> STUDENTS</span>
+              </center>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ femaleStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>FEMALE</b></span>
-                </center>
-              </div>
+        </div>
+        <div class="row">
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ femaleStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>FEMALE USERS</b></span>
+              </center>
             </div>
-            <div class="col-6 mb-3">
-              <div class="box">
-                <center>
-                  <h4>{{ maleStudents }}</h4>
-                  <span class="label">TOTAL NUMBER OF <br /><b>MALE</b></span>
-                </center>
-              </div>
+          </div>
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ maleStudents }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>MALE USERS</b></span>
+              </center>
             </div>
           </div>
         </div>
       </div>
-  
+    </div>
   </div>
 </template>
 
 <script>
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import axios from 'axios';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -88,8 +88,8 @@ export default {
   },
   data() {
     return {
-      femaleStudents: 250,
-      maleStudents: 110,
+      femaleStudents: 0,
+      maleStudents: 0,
       stemStudents: 50,
       abmStudents: 30,
       hummsStudents: 150,
@@ -111,7 +111,7 @@ export default {
       },
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false, // Ensures the chart maintains its aspect ratio
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'top',
@@ -132,8 +132,24 @@ export default {
       return this.stemStudents + this.abmStudents + this.hummsStudents + this.tvlictStudents;
     },
   },
+  mounted() {
+    this.fetchStudentCounts();
+  },
+  methods: {
+    async fetchStudentCounts() {
+      try {
+        const response = await axios.get('http://localhost:8000/api/user-counts');
+        this.femaleStudents = response.data.femaleStudents; ///name sa laravel pinsasa
+        this.maleStudents = response.data.maleStudents;///name sa laravel pinsasa
+      } catch (error) {
+        console.error('Failed to fetch student counts:', error);
+      }
+    },
+  },
 };
 </script>
+
+
 
 <style>
 h3 {

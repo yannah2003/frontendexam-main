@@ -38,12 +38,12 @@
         <tbody>
           <tr v-for="(item, index) in filteredItems" :key="item.lrn">
             <td class="text-center">{{ index + 1 }}</td>
-            <td class="text-center">{{ item.lrn }}</td>
-            <td class="text-center">{{ item.username }}</td>
+            <td class="text-center">{{ item.idnumber }}</td>
+            <td class="text-center">{{ item.lname}},{{ item.fname}} {{ item.mname}}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.strand }}</td>
-            <td class="text-center">{{ item.dateregistered }}</td>
+            <td class="text-center">{{ item.created_at }}</td>
             <td class="text-center">
               <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
               <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
@@ -63,29 +63,28 @@
           <div class="modal-body">
             <form>
               <div class="row mb-3">
-                
                 <div class="col-md-4">
                   <label for="lname" class="form-label">Last Name:</label>
-                  <input type="text" id="lname" v-model="currentUser.lastname" class="form-control" required>
+                  <input type="text" id="lname" v-model="currentUser.lname" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label for="fname" class="form-label">First Name:</label>
-                  <input type="text" id="fname" v-model="currentUser.firstname" class="form-control" required>
+                  <input type="text" id="fname" v-model="currentUser.fname" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label for="mname" class="form-label">Middle Name:</label>
-                  <input type="text" id="mname" v-model="currentUser.middlename" class="form-control" required>
+                  <input type="text" id="mname" v-model="currentUser.mname" class="form-control" required>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label class="form-label d-block">Gender:</label>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.sex">
                     <label class="form-check-label" for="male">Male</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.sex">
                     <label class="form-check-label" for="female">Female</label>
                   </div>
                 </div>
@@ -102,18 +101,23 @@
                   <input type="email" id="email" v-model="currentUser.email" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                  <label for="id" class="form-label">ID / LRN Number:</label>
-                  <input type="text" id="id" v-model="currentUser.lrn" class="form-control" required>
+                  <label for="id" class="form-label">LRN Number:</label>
+                  <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <label for="email" class="form-label">Email Address:</label>
-                  <input type="email" id="email" v-model="currentUser.email" class="form-control" required>
+                <div class="col-md-6 position-relative">
+                  <label for="password" class="form-label">Password:</label>
+                  <div class="input-group">
+                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="currentUser.password" class="form-control" required>
+                    <button type="button" class="btn btn-outline-secondary" @click="togglePasswordVisibility">
+                      <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label for="date" class="form-label">Date Registration:</label>
-                  <input type="text" id="date" v-model="currentUser.dateregistered" class="form-control" required>
+                  <input type="text" id="date" v-model="currentUser.created_at" class="form-control" required>
                 </div>
               </div>
             </form>
@@ -129,13 +133,10 @@
 </template>
 
 <script>
-const users = [
-  { lrn: '12345', username: 'user1', sex: 'male', email: 'user1@example.com', strand: 'HUMMS',  dateregistered: '2023-01-01', lastname: 'Doe', firstname: 'John', middlename: '', gender: 'male' },
-  { lrn: '67890', username: 'user2', sex: 'female', email: 'user2@example.com', strand: 'STEM',  dateregistered: '2023-02-01', lastname: 'Smith', firstname: 'Jane', middlename: '', gender: 'female' },
-];
+import axios from 'axios';
 
 export default {
-  name: 'ManageUser',
+  name: 'ManageUserStudents',
   data() {
     return {
       search: '',
@@ -149,7 +150,8 @@ export default {
         { value: 'ABM', label: 'ABM' }
       ],
       serverItems: [],
-      currentUser: {}  // Holds the user data being edited
+      currentUser: {},  // Holds the user data being edited
+      showPassword: false  // Track password visibility state
     };
   },
   computed: {
@@ -163,10 +165,14 @@ export default {
     },
   },
   methods: {
-    loadItems() {
-      setTimeout(() => {
-        this.serverItems = users;
-      }, 500);
+    fetchData() {
+      axios.get('http://localhost:8000/api/users/students')
+        .then(response => {
+          this.serverItems = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
     },
     openModal(item) {
       this.currentUser = { ...item }; // Populate the modal with user data
@@ -177,16 +183,19 @@ export default {
       // Add remove functionality here
     },
     saveChanges() {
-      console.log('Save changes:', this.currentUser);
-      // Add save functionality here
+      console.log('Save changes for:', this.currentUser);
       this.showModal = false;
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     }
   },
   mounted() {
-    this.loadItems();
-  },
+    this.fetchData();
+  }
 };
 </script>
+
 
 <style scoped>
 .container {

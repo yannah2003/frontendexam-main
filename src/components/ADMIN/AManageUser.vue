@@ -63,21 +63,21 @@
               <div class="row mb-3">
                 <div class="col-md-4">
                   <label for="lname" class="form-label">Last Name:</label>
-                  <input type="text" id="lname" v-model="currentUser.lastname" class="form-control" required>
+                  <input type="text" id="lname" v-model="currentUser.lname" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label for="fname" class="form-label">First Name:</label>
-                  <input type="text" id="fname" v-model="currentUser.firstname" class="form-control" required>
+                  <input type="text" id="fname" v-model="currentUser.fname" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label for="mname" class="form-label">Middle Name:</label>
-                  <input type="text" id="mname" v-model="currentUser.middlename" class="form-control" required>
+                  <input type="text" id="mname" v-model="currentUser.mname" class="form-control" required>
                 </div>
               </div>
               <div class="row mb-3">
                 <div class="col-md-4">
                   <label for="id" class="form-label">ID / LRN Number:</label>
-                  <input type="text" id="id" v-model="currentUser.lrn" class="form-control" required>
+                  <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label d-block">Gender:</label>
@@ -92,7 +92,7 @@
                 </div>
                 <div class="col-md-4">
                   <label for="date" class="form-label">Date Registration:</label>
-                  <input type="date" id="date" v-model="currentUser.dateregistered" class="form-control" required>
+                  <input type="date" id="date" v-model="currentUser.created_at" class="form-control" required>
                 </div>
               </div>
               <div class="row mb-3">
