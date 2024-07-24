@@ -32,18 +32,20 @@
             <th scope="col" class="text-center">Email</th>
             <th scope="col" class="text-center">Position</th>
             <th scope="col" class="text-center">Date Registered</th>
+            <th scope="col" class="text-center">Date Modified</th>
             <th scope="col" class="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in filteredItems" :key="item.lrn">
             <td class="text-center">{{ index + 1 }}</td>
-            <td class="text-center">{{ item.lrn }}</td>
-            <td class="text-center">{{ item.username }}</td>
+            <td class="text-center">{{ item.idnumber }}</td>
+            <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.position }}</td>
-            <td class="text-center">{{ item.dateregistered }}</td>
+            <td class="text-center">{{ formatDate(item.created_at) }}</td>
+            <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
               <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
               <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
@@ -65,57 +67,55 @@
             <form>
               <div class="row mb-3">
                 <div class="col-md-4">
-                  <label for="lname" class="form-label">Last Name:</label>
-                  <input type="text" id="lname" v-model="currentUser.lastname" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label for="fname" class="form-label">First Name:</label>
-                  <input type="text" id="fname" v-model="currentUser.firstname" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                  <label for="mname" class="form-label">Middle Name:</label>
-                  <input type="text" id="mname" v-model="currentUser.middlename" class="form-control" required>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
                   <label for="id" class="form-label">ID / LRN Number:</label>
-                  <input type="text" id="id" v-model="currentUser.lrn" class="form-control" required>
+                  <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label class="form-label d-block">Gender:</label>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.sex">
                     <label class="form-check-label" for="male">Male</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.gender">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.sex">
                     <label class="form-check-label" for="female">Female</label>
                   </div>
                 </div>
-              
-                
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label for="position" class="form-label">Position:</label>
                   <input type="text" id="position" v-model="currentUser.position" class="form-control" required>
                 </div>
-                <div class="col-md-6">
-                  <label for="date" class="form-label">Date Registration:</label>
-                  <input type="text" id="date" v-model="currentUser.dateregistered" class="form-control" required>
-                </div>
-                
               </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="lname" class="form-label">Last Name:</label>
+                  <input type="text" id="lname" v-model="currentUser.lname" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="fname" class="form-label">First Name:</label>
+                  <input type="text" id="fname" v-model="currentUser.fname" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="mname" class="form-label">Middle Name:</label>
+                  <input type="text" id="mname" v-model="currentUser.mname" class="form-control" required>
+                </div>
+              </div>
+              
+              
             
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="email" class="form-label">Email Address:</label>
                   <input type="email" id="email" v-model="currentUser.email" class="form-control" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 position-relative">
                   <label for="password" class="form-label">Password:</label>
-                  <input type="text" id="password" class="form-control" required>
+                  <div class="input-group">
+                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="currentUser.password" class="form-control" required>
+                    <button type="button" class="btn btn-outline-secondary" @click="togglePasswordVisibility">
+                      <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>
@@ -131,10 +131,9 @@
 </template>
 
 <script>
-const users = [
-  { lrn: '12345', username: 'user1', sex: 'male', email: 'user1@example.com', position: 'Teacher 2', dateregistered: '2023-01-01', lastname: 'Doe', firstname: 'John', middlename: '', gender: 'male' },
-  { lrn: '67890', username: 'user2', sex: 'female', email: 'user2@example.com', position: 'Teacher 3', dateregistered: '2023-02-01', lastname: 'Smith', firstname: 'Jane', middlename: '', gender: 'female' },
-];
+
+import axios from 'axios';
+import moment from 'moment';
 
 export default {
   name: 'ManageUserTeachers',
@@ -145,43 +144,71 @@ export default {
       selectedPosition: '',
       positions: ['All Positions', 'Teacher 1', 'Teacher 2', 'Teacher 3'],
       serverItems: [],
-      currentUser: {}  // Holds the user data being edited
+      currentUser: {},  // Holds the user data being edited
+      showPassword: false  // Track password visibility state
     };
   },
   computed: {
     filteredItems() {
       return this.serverItems.filter(item => {
+        const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
+        const searchLower = this.search.toLowerCase();
         return (
-          (this.selectedPosition === '' || this.selectedPosition === 'All Positions' || item.position === this.selectedPosition) &&
-          (this.search === '' || item.username.toLowerCase().includes(this.search.toLowerCase()))
+          (!this.selectedUserType || item.usertype === this.selectedUserType) &&
+          (idnumberStr.includes(searchLower) ||
+          (item.username && item.username.toLowerCase().includes(searchLower)) ||
+          (item.lname && item.lname.toLowerCase().includes(searchLower)) ||
+          (item.fname && item.fname.toLowerCase().includes(searchLower)) ||
+          (item.mname && item.mname.toLowerCase().includes(searchLower)))
         );
       });
     },
   },
+
   methods: {
-    loadItems() {
-      setTimeout(() => {
-        this.serverItems = users;
-      }, 500);
+    fetchData() {
+      axios.get('http://localhost:8000/api/users/teachers')
+        .then(response => {
+          this.serverItems = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
     },
-    openModal(item) {
-      this.currentUser = { ...item }; // Populate the modal with user data
+    openModal(user) {
+      this.currentUser = { ...user };
       this.showModal = true;
     },
-    removeUser(item) {
-      console.log('Remove user:', item);
-      // Add remove functionality here
-    },
     saveChanges() {
-      console.log('Save changes:', this.currentUser);
-      // Add save functionality here
-      this.showModal = false;
-    }
+      axios.put(`http://localhost:8000/api/user/${this.currentUser.id}`, this.currentUser)
+        .then(() => {
+          this.fetchData();
+          this.showModal = false;
+        })
+        .catch(error => {
+          console.error('Error saving changes:', error);
+        });
+    },
+    removeUser(user) {
+      axios.delete(`http://localhost:8000/api/users/${user.id}`)
+        .then(() => {
+          this.fetchData();
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error);
+        });
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    formatDate(date) {
+      return moment(date).format('YYYY/M/D [time] h:mm a');
+    },
   },
   mounted() {
-    this.loadItems();
+    this.fetchData();
   },
-};
+}
 </script>
 
 <style scoped>

@@ -32,6 +32,7 @@
             <th scope="col" class="text-center">Email</th>
             <th scope="col" class="text-center">Strand</th>
             <th scope="col" class="text-center">Date Registered</th>
+            <th scope="col" class="text-center">Date Modified</th>
             <th scope="col" class="text-center">Actions</th>
           </tr>
         </thead>
@@ -43,7 +44,8 @@
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.strand }}</td>
-            <td class="text-center">{{ item.created_at }}</td>
+            <td class="text-center">{{ formatDate(item.created_at) }}</td>
+            <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
               <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
               <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
@@ -64,6 +66,29 @@
             <form>
               <div class="row mb-3">
                 <div class="col-md-4">
+                  <label for="id" class="form-label">LRN Number:</label>
+                  <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label d-block">Gender:</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.sex">
+                    <label class="form-check-label" for="male">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.sex">
+                    <label class="form-check-label" for="female">Female</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="strand" class="form-label">Strand:</label>
+                  <select v-model="currentUser.strand" id="strand" class="form-select">
+                    <option v-for="(strand, index) in strands" :key="index" :value="strand.value">{{ strand.label }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
                   <label for="lname" class="form-label">Last Name:</label>
                   <input type="text" id="lname" v-model="currentUser.lname" class="form-control" required>
                 </div>
@@ -76,36 +101,13 @@
                   <input type="text" id="mname" v-model="currentUser.mname" class="form-control" required>
                 </div>
               </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <label class="form-label d-block">Gender:</label>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="currentUser.sex">
-                    <label class="form-check-label" for="male">Male</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="currentUser.sex">
-                    <label class="form-check-label" for="female">Female</label>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label for="strand" class="form-label">Strand:</label>
-                  <select v-model="currentUser.strand" id="strand" class="form-select">
-                    <option v-for="(strand, index) in strands" :key="index" :value="strand.value">{{ strand.label }}</option>
-                  </select>
-                </div>
-              </div>
+              
+
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="email" class="form-label">Email Address:</label>
                   <input type="email" id="email" v-model="currentUser.email" class="form-control" required>
                 </div>
-                <div class="col-md-6">
-                  <label for="id" class="form-label">LRN Number:</label>
-                  <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
-                </div>
-              </div>
-              <div class="row mb-3">
                 <div class="col-md-6 position-relative">
                   <label for="password" class="form-label">Password:</label>
                   <div class="input-group">
@@ -115,11 +117,8 @@
                     </button>
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <label for="date" class="form-label">Date Registration:</label>
-                  <input type="text" id="date" v-model="currentUser.created_at" class="form-control" required>
-                </div>
               </div>
+          
             </form>
           </div>
           <div class="modal-footer">
@@ -134,6 +133,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   name: 'ManageUserStudents',
@@ -157,13 +157,20 @@ export default {
   computed: {
     filteredItems() {
       return this.serverItems.filter(item => {
+        const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
+        const searchLower = this.search.toLowerCase();
         return (
-          (this.selectedStrand === '' || item.strand === this.selectedStrand) && // Filter by strand
-          (this.search === '' || item.username.toLowerCase().includes(this.search.toLowerCase()))
+          (!this.selectedUserType || item.usertype === this.selectedUserType) &&
+          (idnumberStr.includes(searchLower) ||
+          (item.username && item.username.toLowerCase().includes(searchLower)) ||
+          (item.lname && item.lname.toLowerCase().includes(searchLower)) ||
+          (item.fname && item.fname.toLowerCase().includes(searchLower)) ||
+          (item.mname && item.mname.toLowerCase().includes(searchLower)))
         );
       });
     },
   },
+
   methods: {
     fetchData() {
       axios.get('http://localhost:8000/api/users/students')
@@ -183,12 +190,21 @@ export default {
       // Add remove functionality here
     },
     saveChanges() {
-      console.log('Save changes for:', this.currentUser);
-      this.showModal = false;
+      axios.put(`http://localhost:8000/api/user/${this.currentUser.id}`, this.currentUser)
+        .then(() => {
+          this.fetchData();
+          this.showModal = false;
+        })
+        .catch(error => {
+          console.error('Error saving changes:', error);
+        });
     },
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
-    }
+    },
+    formatDate(date) {
+      return moment(date).format('YYYY/M/D [time] h:mm a');
+    },
   },
   mounted() {
     this.fetchData();

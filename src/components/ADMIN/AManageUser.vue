@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="container bg-light p-4 border rounded-bottom">
@@ -30,6 +29,7 @@
             <th scope="col" class="text-center">Email</th>
             <th scope="col" class="text-center">User Type</th>
             <th scope="col" class="text-center">Date Registered</th>
+            <th scope="col" class="text-center">Date Modified</th>
             <th scope="col" class="text-center">Actions</th>
           </tr>
         </thead>
@@ -37,11 +37,12 @@
           <tr v-for="(item, index) in filteredItems" :key="item.idnumber">
             <td class="text-center">{{ index + 1 }}</td>
             <td class="text-center">{{ item.idnumber }}</td>
-            <td class="text-center">{{ item.lname}},{{ item.fname}} {{ item.mname}}</td>
+            <td class="text-center">{{ item.lname }},{{ item.fname }} {{ item.mname }}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.usertype }}</td>
-            <td class="text-center">{{ item.created_at }}</td>
+            <td class="text-center">{{ formatDate(item.created_at) }}</td>
+            <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
               <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
               <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
@@ -75,7 +76,7 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-md-4">
+                <div class="col-md-8">
                   <label for="id" class="form-label">ID / LRN Number:</label>
                   <input type="text" id="id" v-model="currentUser.idnumber" class="form-control" required>
                 </div>
@@ -90,19 +91,20 @@
                     <label class="form-check-label" for="female">Female</label>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <label for="date" class="form-label">Date Registration:</label>
-                  <input type="date" id="date" v-model="currentUser.created_at" class="form-control" required>
-                </div>
               </div>
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="email" class="form-label">Email Address:</label>
                   <input type="email" id="email" v-model="currentUser.email" class="form-control" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 position-relative">
                   <label for="password" class="form-label">Password:</label>
-                  <input type="password" id="password" v-model="currentUser.password" class="form-control" required>
+                  <div class="input-group">
+                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="currentUser.password" class="form-control" required>
+                    <button type="button" class="btn btn-outline-secondary" @click="togglePasswordVisibility">
+                      <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>
@@ -119,6 +121,7 @@
 
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   name: 'ManageUser',
@@ -127,23 +130,31 @@ export default {
       search: '',
       showModal: false,
       selectedUserType: '',
+      showPassword: false,
       userTypes: ['student', 'teacher'],
       serverItems: [],
       currentUser: {}  // Holds the user data being edited
     };
   },
-  computed: {
+    computed: {
     filteredItems() {
       return this.serverItems.filter(item => {
+        const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
+        const searchLower = this.search.toLowerCase();
         return (
           (!this.selectedUserType || item.usertype === this.selectedUserType) &&
-          (this.search === '' || item.username.toLowerCase().includes(this.search.toLowerCase()))
+          (idnumberStr.includes(searchLower) ||
+          (item.username && item.username.toLowerCase().includes(searchLower)) ||
+          (item.lname && item.lname.toLowerCase().includes(searchLower)) ||
+          (item.fname && item.fname.toLowerCase().includes(searchLower)) ||
+          (item.mname && item.mname.toLowerCase().includes(searchLower)))
         );
       });
     },
   },
+
   methods: {
-    fetchData() {//////////fetch
+    fetchData() {
       axios.get('http://localhost:8000/api/users')
         .then(response => {
           this.serverItems = response.data;
@@ -157,41 +168,38 @@ export default {
       this.showModal = true;
     },
     saveChanges() {
-      if (this.currentUser.id) {
-        axios.put(`/api/users/${this.currentUser.id}`, this.currentUser)
-          .then(() => {
-            this.fetchData();
-            this.showModal = false;
-          })
-          .catch(error => {
-            console.error('Error saving changes:', error);
-          });
-      } else {
-        axios.post('/api/users', this.currentUser)
-          .then(() => {
-            this.fetchData();
-            this.showModal = false;
-          })
-          .catch(error => {
-            console.error('Error saving changes:', error);
-          });
-      }
+      axios.put(`http://localhost:8000/api/user/${this.currentUser.id}`, this.currentUser)
+        .then(() => {
+          this.fetchData();
+          this.showModal = false;
+        })
+        .catch(error => {
+          console.error('Error saving changes:', error);
+        });
     },
     removeUser(user) {
-      axios.delete(`/api/users/${user.id}`)
+      axios.delete(`http://localhost:8000/api/users/${user.id}`)
         .then(() => {
           this.fetchData();
         })
         .catch(error => {
           console.error('Error deleting user:', error);
         });
-    }
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    formatDate(date) {
+      return moment(date).format('YYYY/M/D [time] h:mm a');
+    },
   },
   mounted() {
     this.fetchData();
-  }
+  },
 };
 </script>
+
+
 
 <style scoped>
 .container {
@@ -225,6 +233,7 @@ h4 {
 .form-select {
   width: 200px;
 }
+
 .modal-content {
   border: 2px solid #28a745; /* Green border */
   border-radius: 10px; /* Rounded corners */
@@ -237,53 +246,50 @@ h4 {
 }
 
 .modal-title {
-  font-size: 1.25rem; /* Larger font size for the title */
-  font-weight: bold;
-}
-
-.btn-close {
-  filter: invert(1); /* White close button icon */
+  font-size: 1.25rem;
 }
 
 .modal-body {
-  background-color: #f8f9fa; /* Light grey background for form */
-}
-
-.input-group-text {
-  background-color: #e9ecef; /* Light grey background for input labels */
-  border: 1px solid #ced4da; /* Light border around input labels */
-  color: #495057; /* Dark grey text color */
-}
-
-.form-control {
-  border-radius: 5px; /* Rounded corners for input fields */
-  border: 1px solid #ced4da; /* Light border around input fields */
-}
-
-.form-control:focus {
-  border-color: #28a745; /* Green border on focus */
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green shadow on focus */
+  padding: 1.5rem; /* More padding for the body */
 }
 
 .modal-footer {
+  display: flex;
+  justify-content: space-between; /* Buttons on opposite ends */
   border-top: 1px solid #ddd; /* Light border above footer */
 }
 
-.btn-secondary {
-  background-color: #6c757d; /* Grey background for secondary button */
-  border: none;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268; /* Darker grey on hover */
+.form-control:focus {
+  box-shadow: 0 0 5px rgba(72, 180, 97, 0.5); /* Green shadow */
+  border-color: #28a745; /* Green border */
 }
 
 .btn-primary {
-  background-color: #28a745; /* Green background for primary button */
-  border: none;
+  background-color: #28a745;
+  border-color: #28a745;
 }
 
 .btn-primary:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.table-success {
+  background-color: #d4edda; /* Light green background */
+  color: #155724; /* Dark green text */
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.25); /* Light blue background */
 }
 </style>
