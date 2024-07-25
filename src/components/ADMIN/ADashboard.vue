@@ -55,7 +55,7 @@
           <div class="col-6 mb-3">
             <div class="box">
               <center>
-                <h4>{{ femaleStudents }}</h4>
+                <h4>{{ femaleUsers }}</h4>
                 <span class="label">TOTAL NUMBER OF <br /><b>FEMALE USERS</b></span>
               </center>
             </div>
@@ -63,12 +63,32 @@
           <div class="col-6 mb-3">
             <div class="box">
               <center>
-                <h4>{{ maleStudents }}</h4>
+                <h4>{{ maleUsers }}</h4>
                 <span class="label">TOTAL NUMBER OF <br /><b>MALE USERS</b></span>
               </center>
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ teacher }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>TEACHERS</b></span>
+              </center>
+            </div>
+          </div>
+          <div class="col-6 mb-3">
+            <div class="box">
+              <center>
+                <h4>{{ student }}</h4>
+                <span class="label">TOTAL NUMBER OF <br /><b>STUDENTS</b></span>
+              </center>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -88,8 +108,10 @@ export default {
   },
   data() {
     return {
-      femaleStudents: 0,
-      maleStudents: 0,
+      femaleUsers: 0,
+      maleUsers: 0,
+      teacher: 0,
+      student: 0,
       stemStudents: 50,
       abmStudents: 30,
       hummsStudents: 150,
@@ -133,16 +155,18 @@ export default {
     },
   },
   mounted() {
-    this.fetchStudentCounts();
+    this.fetchUsersCounts();
   },
   methods: {
-    async fetchStudentCounts() {
+    async fetchUsersCounts() {
       try {
         const response = await axios.get('http://localhost:8000/api/user-counts');
-        this.femaleStudents = response.data.femaleStudents; ///name sa laravel pinsasa
-        this.maleStudents = response.data.maleStudents;///name sa laravel pinsasa
+        this.femaleUsers = response.data.femaleUsers; ///name sa laravel pinsasa
+        this.maleUsers = response.data.maleUsers;///name sa laravel pinsasa
+        this.teacher = response.data.teacher;///name sa laravel pinsasa
+        this.student = response.data.student;///name sa laravel pinsasa
       } catch (error) {
-        console.error('Failed to fetch student counts:', error);
+        console.error('Failed to fetch Users counts:', error);
       }
     },
   },

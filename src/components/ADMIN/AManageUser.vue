@@ -4,6 +4,17 @@
       <h4 class="text-center">Manage ALL Users</h4><br>
       <div class="row mb-4 justify-content-end align-items-center">
         <div class="col-md-4 d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              Sort By: {{ sortDirection === 'asc' ? 'A -> Z' : 'Z -> A' }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item" type="button" @click="sortItems('asc')">A -> Z</button></li>
+              <li><button class="dropdown-item" type="button" @click="sortItems('desc')">Z -> A</button></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-center">
           <label for="userType" class="form-label me-2">SELECT USER TYPE:</label>
           <select v-model="selectedUserType" class="form-select" id="userType">
             <option v-for="type in userTypes" :key="type" :value="type">{{ type }}</option>
@@ -34,10 +45,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in filteredItems" :key="item.idnumber">
+          <tr v-for="(item, index) in sortedFilteredItems" :key="item.idnumber">
             <td class="text-center">{{ index + 1 }}</td>
             <td class="text-center">{{ item.idnumber }}</td>
-            <td class="text-center">{{ item.lname }},{{ item.fname }} {{ item.mname }}</td>
+            <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.usertype }}</td>
@@ -131,12 +142,13 @@ export default {
       showModal: false,
       selectedUserType: '',
       showPassword: false,
+      sortDirection: 'asc', // default sort direction
       userTypes: ['student', 'teacher'],
       serverItems: [],
       currentUser: {}  // Holds the user data being edited
     };
   },
-    computed: {
+  computed: {
     filteredItems() {
       return this.serverItems.filter(item => {
         const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
@@ -151,8 +163,14 @@ export default {
         );
       });
     },
+    sortedFilteredItems() {
+      const sortedItems = [...this.filteredItems].sort((a, b) => {
+        const comparison = a.lname.localeCompare(b.lname); //// a.lname.localeCompare(b.lname) compares the lname property of two items (a and b) for sorting.
+        return this.sortDirection === 'asc' ? comparison : -comparison;
+      });
+      return sortedItems;
+    }
   },
-
   methods: {
     fetchData() {
       axios.get('http://localhost:8000/api/users')
@@ -192,14 +210,15 @@ export default {
     formatDate(date) {
       return moment(date).format('YYYY/M/D [time] h:mm a');
     },
+    sortItems(direction) {
+      this.sortDirection = direction;
+    }
   },
   mounted() {
     this.fetchData();
   },
 };
 </script>
-
-
 
 <style scoped>
 .container {

@@ -104,15 +104,15 @@ h3 {
   bottom: 20px;
   right: 20px;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 50px;
   background-color: #38a05d;
   border: none;
-  color: white;
+  color: rgb(255, 255, 255);
   cursor: pointer;
 }
 

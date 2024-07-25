@@ -3,6 +3,17 @@
     <div class="container bg-light p-4 border rounded-bottom">
       <h4 class="text-center">Manage Users TEACHERS</h4><br>
       <div class="row mb-4 justify-content-end align-items-center">
+        <div class="col-md-4 d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              Sort By: {{ sortDirection === 'asc' ? 'A -> Z' : 'Z -> A' }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item" type="button" @click="sortItems('asc')">A -> Z</button></li>
+              <li><button class="dropdown-item" type="button" @click="sortItems('desc')">Z -> A</button></li>
+            </ul>
+          </div>
+        </div>
         <!-- Dropdown for Position Filtering -->
         <div class="col-md-4 d-flex align-items-center">
           <label for="userPosition" class="form-label me-2">SELECT POSITION:</label>
@@ -37,7 +48,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in filteredItems" :key="item.lrn">
+          <tr v-for="(item, index) in sortedFilteredItems" :key="item.lrn">
             <td class="text-center">{{ index + 1 }}</td>
             <td class="text-center">{{ item.idnumber }}</td>
             <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
@@ -141,8 +152,9 @@ export default {
     return {
       search: '',
       showModal: false,
+      sortDirection: 'asc', // default sort direction
       selectedPosition: '',
-      positions: ['All Positions', 'Teacher 1', 'Teacher 2', 'Teacher 3'],
+      positions: ['All Positions', 'Teacher 1', 'Teacher 2', 'Teacher 3' , ''],
       serverItems: [],
       currentUser: {},  // Holds the user data being edited
       showPassword: false  // Track password visibility state
@@ -154,7 +166,7 @@ export default {
         const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
         const searchLower = this.search.toLowerCase();
         return (
-          (!this.selectedUserType || item.usertype === this.selectedUserType) &&
+          (!this.selectedPosition || item.positions === this.selectedPosition) &&
           (idnumberStr.includes(searchLower) ||
           (item.username && item.username.toLowerCase().includes(searchLower)) ||
           (item.lname && item.lname.toLowerCase().includes(searchLower)) ||
@@ -163,6 +175,13 @@ export default {
         );
       });
     },
+    sortedFilteredItems() {
+      const sortedItems = [...this.filteredItems].sort((a, b) => {
+        const comparison = a.lname.localeCompare(b.lname); // Sorting by last name
+        return this.sortDirection === 'asc' ? comparison : -comparison;
+      });
+      return sortedItems;
+    }
   },
 
   methods: {
@@ -204,6 +223,9 @@ export default {
     formatDate(date) {
       return moment(date).format('YYYY/M/D [time] h:mm a');
     },
+    sortItems(direction) {
+      this.sortDirection = direction;
+    }
   },
   mounted() {
     this.fetchData();
