@@ -311,8 +311,21 @@ export default {
   font-size: 40px;
 }
 .modal-content {
-  width: 100%;
+  border: 2px solid #28a745; /* Green border */
+  border-radius: 10px; /* Rounded corners */
 }
+
+.modal-header {
+  background-color:#50C878; /* Green header background */
+  color: #130404; /* White text color */
+  border-bottom: 1px solid #ddd; /* Light border below header */
+}
+
+.modal-title {
+  font-size: 1.25rem; /* Larger font size for the title */
+  font-weight: bold;
+}
+
 
 .modal-dialog.modal-md {
   max-width: 50%;
