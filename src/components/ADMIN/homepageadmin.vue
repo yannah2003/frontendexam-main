@@ -160,7 +160,7 @@ export default {
     return {
       isLoggedIn: false,
       userProfile: null,
-      drawerVisible: false,
+      drawerVisible: true,
       isPopoverVisible: false,
       isDropdownVisible: {
         manageUser: false,
@@ -434,12 +434,11 @@ export default {
   background-color: rgba(0, 145, 7, 0.1);
 }
 
-/* Highlight active strand */
+/* Highlight the parent dropdown item when its submenu is active */
 .dropdown-submenu.active > .dropdown-item {
   background-color: #50C878;
   color: white;
 }
-
 .dropdown-menu .dropdown-item.active {
   background-color: #50C878;
   color: white;

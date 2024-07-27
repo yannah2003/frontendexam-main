@@ -6,26 +6,101 @@
         <h2 class="logo me-2">WISE - SHS</h2>
       </div>
       <div class="d-flex align-items-center ms-auto">
-        <h4 class="mb-0 me-3">WELCOME STUDENT !</h4>
+        <h4 class="mb-0 me-3">WELCOME {{userProfile.fname}} !</h4>
         <div @click="togglePopover" style="cursor: pointer; position: relative;">
-          <i class="bi bi-person-fill" style="font-size: 40px; margin-right: 20px;"></i>
+          <i class="bi bi-person-fill" style="font-size: 40px; margin-right: 40px;"></i>
           <div v-if="isPopoverVisible" class="popover show" role="tooltip">
             <div class="popover-arrow"></div>
-            <div class="popover-body">
-              <div class="field-container" v-if="userProfile">
-                <span>ID number: {{ userProfile.idnumber }}</span>
-                <i class="fas fa-edit" @click="editIdNumber"></i>
-              </div>
-              <div class="field-container" v-if="userProfile">
-                <span>NAME: {{ userProfile.lname }}</span>
-                <i class="fas fa-edit" @click="editName"></i>
-              </div>
-              <button class="btn btn-danger btn-sm mt-2" @click="handleLogoutClick">Log Out</button>
+            <div class="popover-body">     
+                <span> {{ userProfile.idnumber }}</span>              
+                <span>{{ userProfile.lname }}, {{ userProfile.fname }} {{ userProfile.mname }}</span> 
+                <span>{{ userProfile.strand }}</span>    
+                <button class="btn btn-success btn-sm mt-2" @click="showModal = true">My Profile</button>
             </div>
           </div>
         </div>
       </div>
     </nav>
+    <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">My Profile</h5>
+            <button type="button" class="btn-close" @click="showModal = false" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <label for="id" class="form-label">LRN Number:</label>
+                  <input type="text" id="id" v-model="userProfile.idnumber" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label d-block">Gender:</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" v-model="userProfile.sex">
+                    <label class="form-check-label" for="male">Male</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" v-model="userProfile.sex">
+                    <label class="form-check-label" for="female">Female</label>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="strand" class="form-label">Strand:</label>
+                  <select v-model="strand" id="strand" class="form-select">
+                    <option v-for="(strand, index) in strands" :key="index" :value="strand.value">{{ strand.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label for="grade" class="form-label">GRADE:</label>
+                  <select v-model="gradelevel" id="grade" class="form-select">
+              <option v-for="(grade, index) in grades" :key="index" :value="grade.value">{{ grade.label }}</option>
+            </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="lname" class="form-label">Last Name:</label>
+                  <input type="text" id="lname" v-model="userProfile.lname" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="fname" class="form-label">First Name:</label>
+                  <input type="text" id="fname" v-model="userProfile.fname" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="mname" class="form-label">Middle Name:</label>
+                  <input type="text" id="mname" v-model="userProfile.mname" class="form-control" required>
+                </div>
+              </div>
+              
+
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email Address:</label>
+                  <input type="email" id="email" v-model="userProfile.email" class="form-control" required>
+                </div>
+                <div class="col-md-6 position-relative">
+                  <label for="password" class="form-label">Password:</label>
+                  <div class="input-group">
+                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="userProfile.password" class="form-control" required>
+                    <button type="button" class="btn btn-outline-secondary" @click="togglePasswordVisibility">
+                      <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+          
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="showModal = false">Close</button>
+            <button type="button" class="btn btn-primary" @click="updateProfile">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="d-flex">
       <div :class="['drawer', drawerVisible ? 'd-block' : 'd-none']">
         <router-link
@@ -67,14 +142,31 @@ export default {
   },
   data() {
     return {
-      drawerVisible: false,
+      drawerVisible: true,
       isPopoverVisible: false,
       isDropdownVisible: false,
+      showPassword: false,  // Track password visibility state
+      showModal: false,
       selectedItem: '',
       userProfile: {
         idnumber: '',
-        lname: ''
+        lname: '',
+        fname: '',
+        mname: '',
+       
       },
+      strands: [
+        { value: 'STEM', label: 'STEM' },
+        { value: 'ABM', label: 'ABM' },
+        { value: 'HUMMS', label: 'HUMMS' },
+        { value: 'TVL-ICT', label: 'TVL-ICT' },
+        // Add more strands as needed
+      ],
+      grades: [
+        { value: 'GRADE 11', label: 'GRADE 11' },
+        { value: 'GRADE 12', label: 'GRADE 12' },
+        // Add more strands as needed
+      ],
       items: [
         { path: '/sdashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
         { path: '/saddsubject', label: 'Add Subjects', icon: 'bi bi-file-earmark-plus-fill fs-4' },
@@ -121,12 +213,68 @@ export default {
         console.error('Logout failed:', error);
       }
     },
+    async updateProfile() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No token found. User is not authenticated.');
+          alert('Authentication required. Please log in.');
+          return;
+        }
+
+        // Prepare the payload with all required fields
+        const payload = {
+          user_id: this.userProfile.id, // Ensure `user_id` is included
+          strand: this.strand,
+          gradelevel: this.gradelevel,
+          // Include other necessary fields based on your API's requirements
+        };
+
+        console.log('Sending payload:', payload); // Debugging line
+
+        const response = await axios.post('http://localhost:8000/api/store2', payload, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        alert('You successfully set your Strand and Grade Level', response.data);
+        this.showModal = false; // Close the modal after successful update
+
+        // Clear any previous error messages
+        this.errorMessage = '';
+
+      } catch (error) {
+        // Log full error response for debugging
+        console.error('Failed to update profile:', error.response ? error.response.data : error.message);
+
+        // Extract error message
+        const errorMessage = error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : 'An unexpected error occurred. Please try again.';
+
+        // Handle and display specific error messages
+        if (errorMessage.includes('The user id has already been taken')) {
+          alert('You already set your strand and grade level. NOTE: You can only set it once');
+        } else if (errorMessage.includes('The strand field is required')) {
+          alert('The strand field is required. Please select a strand.');
+        } else if (errorMessage.includes('You already set your strand and grade')) {
+          alert('You already set your strand and grade.');
+        } else {
+          alert('Failed to update profile: ' + errorMessage);
+        }
+      }
+    },
+
+
     toggleDrawer() {
       this.drawerVisible = !this.drawerVisible;
     },
     togglePopover() {
       this.isPopoverVisible = !this.isPopoverVisible;
     },
+    
+   
     toggleDropdown() {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
@@ -142,12 +290,16 @@ export default {
       this.isPopoverVisible = false;
       this.isDropdownVisible = false;
     },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
   },
   mounted() {
     this.fetchUserProfile(); // Fetch user profile when component is mounted
     this.$router.push('/sdashboard');
     this.selectedItem = '/sdashboard';
   },
+  
 };
 </script>
 
@@ -157,6 +309,13 @@ export default {
   color: white;
   text-shadow: 1px 1px 2px black;
   font-size: 40px;
+}
+.modal-content {
+  width: 100%;
+}
+
+.modal-dialog.modal-md {
+  max-width: 50%;
 }
 
 .navbar {
@@ -223,11 +382,13 @@ export default {
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  width: 200px;
+
+  width: 250px;
   top: 50px; /* Adjust this value based on where you want it to appear */
-  left: -210px; /* Adjust this value to position it relative to the profile icon */
+  left: -170px; /* Adjust this value to position it relative to the profile icon */
   opacity: 0;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 16px;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
