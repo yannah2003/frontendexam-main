@@ -42,6 +42,7 @@
             <th scope="col" class="text-center">Sex</th>
             <th scope="col" class="text-center">Email</th>
             <th scope="col" class="text-center">Strand</th>
+            <th scope="col" class="text-center">Grade Level</th>
             <th scope="col" class="text-center">Date Registered</th>
             <th scope="col" class="text-center">Date Modified</th>
             <th scope="col" class="text-center">Actions</th>
@@ -55,6 +56,7 @@
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.strand }}</td>
+            <td class="text-center">{{ item.gradelevel }}</td>
             <td class="text-center">{{ formatDate(item.created_at) }}</td>
             <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">

@@ -14,7 +14,7 @@
             <div class="popover-body">     
                 <span> {{ userProfile.idnumber }}</span>              
                 <span>{{ userProfile.lname }}, {{ userProfile.fname }} {{ userProfile.mname }}</span> 
-                <span>{{ userProfile.strand }}</span>    
+                <span>STRAND: {{ userProfile.strand }}</span>    
                 <button class="btn btn-success btn-sm mt-2" @click="showModal = true">My Profile</button>
             </div>
           </div>
@@ -153,6 +153,7 @@ export default {
         lname: '',
         fname: '',
         mname: '',
+        strand: ''
        
       },
       strands: [
@@ -188,7 +189,7 @@ export default {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-        this.userProfile = response.data.data || { idnumber: '', lname: '' }; // Ensure fallback in case of missing data
+        this.userProfile = response.data.data || { idnumber: '', lname: '', strand: '' }; // Ensure fallback in case of missing data
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
         this.userProfile = { idnumber: '', lname: '' }; // Fallback if fetch fails
