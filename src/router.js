@@ -21,10 +21,13 @@ import TeacherAddSubject from './components/TEACHER/teacheraddsubject.vue';
 import TeacherListsofSubject from './components/TEACHER/teacherlistofsubject.vue';
 import ManagingSubjects from './components/TEACHER/managesubject.vue';
 import SubjectPages from './components/TEACHER/subjectspage.vue';
+import ListOfTheStudentinTheSubjects from './components/TEACHER/ListOfStudents.vue';
 import Addexaminations from './components/TEACHER/AddExam.vue';
+import CreationOfExaminations from './components/TEACHER/CreatingExam.vue';
 import FeedbacksofStudent from './components/TEACHER/Feedback.vue';
 import ITEManalysis from './components/TEACHER/ItemAnalysis.vue';
 import PerformancesTracking from './components/TEACHER/ItemAnalysis.vue';
+import ReportGenerating from './components/TEACHER/GenerateReport.vue';
 
 import Student_homepage from './components/STUDENT/studenthomepage.vue';
 import StudentDashboard from './components/STUDENT/Sdashboard.vue';
@@ -51,15 +54,19 @@ const routes = [
   { path: '/strand-section/tvl12', component: Tvl12Page},
   { path: '/teacher', component: Teacher_homepage },
  
+  { path: '/teacher', component: Teacher_homepage },
   { path: '/teacherdashboard', component: TeachersDashboard},
   { path: '/teacheraddsubject', component: TeacherAddSubject},
   { path: '/teacherlistofsubject', component: TeacherListsofSubject},
   { path: '/managesubject', component: ManagingSubjects},
-  { path: '/subjectspage', component: SubjectPages }, 
+  { path: '/subjectspage/:subjectId', component: SubjectPages, name: 'SubjectPage' },
+  { path: '/ListOfStudents', component: ListOfTheStudentinTheSubjects},
   { path: '/AddExam', component: Addexaminations },
+  { path: '/CreatingExam', component: CreationOfExaminations},
   { path: '/Feedback', component: FeedbacksofStudent },
   { path: '/ItemAnalysis', component: ITEManalysis },
   { path: '/PerformanceTracking', component: PerformancesTracking },
+  { path: '/GenerateReport', component: ReportGenerating},
   { path: '/student', component: Student_homepage },
   { path: '/sdashboard', component: StudentDashboard },
   { path: '/saddsubject', component: AddSubject },

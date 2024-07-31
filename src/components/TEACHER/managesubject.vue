@@ -31,24 +31,20 @@
           <th scope="col" class="text-center">Strand</th>
           <th scope="col" class="text-center">Semester</th>
           <th scope="col" class="text-center">Generated Code</th>
-          <th scope="col" class="text-center">Image</th>
           <th scope="col" class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(subject, index) in filteredSubjects" :key="index">
           <td class="text-center">{{ index + 1 }}</td>
-          <td class="text-center">{{ subject.subjectName }}</td>
-          <td class="text-center">{{ subject.yearLevel }}</td>
+          <td class="text-center">{{ subject.subjectname }}</td>
+          <td class="text-center">{{ subject.yearlevel }}</td>
           <td class="text-center">{{ subject.strand }}</td>
           <td class="text-center">{{ subject.semester }}</td>
-          <td class="text-center">{{ subject.code }}</td>
-          <td class="text-center">
-            <img :src="subject.image" alt="Subject Image" width="50" height="50" />
-          </td>
+          <td class="text-center">{{ subject.gen_code }}</td>
           <td class="text-center">
             <i class="bi bi-pencil-square custom-icon me-2" @click="editSubject(index)"></i>
-            <i class="bi bi-person-x-fill custom-icon" @click="deleteSubject(index)"></i>
+            <i class="bi bi-person-x-fill custom-icon" @click="deleteSubject(subject.id, index)"></i>
           </td>
         </tr>
       </tbody>
@@ -58,27 +54,43 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ManageSubjects',
   data() {
     return {
-      subjects: JSON.parse(localStorage.getItem('subjects')) || [],
+      subjects: [],
       search: '',
       selectedYearLevel: '',
-      yearLevels: ['Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'], // Example year levels
+      yearLevels: ['Grade 11', 'Grade 12'], // Example year levels
     };
   },
   computed: {
     filteredSubjects() {
       return this.subjects.filter(subject => {
         return (
-          (!this.selectedYearLevel || subject.yearLevel === this.selectedYearLevel) &&
-          (this.search === '' || subject.subjectName.toLowerCase().includes(this.search.toLowerCase()))
+          (!this.selectedYearLevel || subject.yearlevel === this.selectedYearLevel) &&
+          (this.search === '' || subject.subjectname.toLowerCase().includes(this.search.toLowerCase()))
         );
       });
     },
   },
   methods: {
+    async fetchSubjects() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.get('http://localhost:8000/api/subjects', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        this.subjects = response.data.data;
+        localStorage.setItem('subjects', JSON.stringify(this.subjects));
+      } catch (error) {
+        console.error('Error fetching subjects:', error.response?.data?.message || error.message);
+      }
+    },
     goToAddSubject() {
       this.$router.push('/teacheraddsubject');
     },
@@ -86,10 +98,23 @@ export default {
       const subject = this.subjects[index];
       this.$router.push({ path: '/teacheraddsubject', query: { subject: JSON.stringify(subject), index } });
     },
-    deleteSubject(index) {
-      this.subjects.splice(index, 1);
-      localStorage.setItem('subjects', JSON.stringify(this.subjects));
+    async deleteSubject(subjectId, index) {
+      const token = localStorage.getItem('token');
+      try {
+        await axios.delete(`http://localhost:8000/api/subjects/${subjectId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        this.subjects.splice(index, 1);
+        localStorage.setItem('subjects', JSON.stringify(this.subjects));
+      } catch (error) {
+        console.error('Error deleting subject:', error.response?.data?.message || error.message);
+      }
     },
+  },
+  created() {
+    this.fetchSubjects();
   },
 };
 </script>

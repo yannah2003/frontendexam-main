@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback-page">
+    <div class="analysis-page">
       <div class="container-fluid">
         <div class="row">
           <!-- Drawer Section -->
@@ -25,7 +25,8 @@
   
           <!-- Main Content Section -->
           <div class="col-md-10 right-column">
-            <h1>Feedback</h1>
+            <h1>Generate Report</h1>
+            <button @click="generateReport">Generate PDF Report</button>
           </div>
         </div>
       </div>
@@ -33,8 +34,10 @@
   </template>
   
   <script>
+  import jsPDF from 'jspdf';
+  
   export default {
-    name: 'FeedbacksofStudent',
+    name: 'ReportGenerating',
     data() {
       return {
         selectedItem: '',
@@ -43,7 +46,15 @@
           { path: '/AddExam', label: 'Add Exam', icon: 'bi bi-file-earmark-text fs-4' },
           { path: '/Feedback', label: 'Feedback', icon: 'bi bi-chat-square-text fs-4' },
           { path: '/ItemAnalysis', label: 'Item Analysis', icon: 'bi bi-graph-up-arrow fs-4' },
-          { path: '/PerformanceTracking', label: 'Performance Tracking', icon: 'bi bi-speedometer2 fs-4' }
+          { path: '/PerformanceTracking', label: 'Performance Tracking', icon: 'bi bi-speedometer2 fs-4' },
+          { path: '/GenerateReport', label: 'Report Generating', icon: 'bi bi-speedometer2 fs-4' }
+        ],
+        examResults: [
+          { name: 'John Doe', score: 95, grade: 'A' },
+          { name: 'Jane Smith', score: 89, grade: 'B+' },
+          { name: 'Alice Johnson', score: 72, grade: 'C' },
+          { name: 'Robert Brown', score: 84, grade: 'B' },
+          // Add more student results here
         ]
       };
     },
@@ -53,13 +64,34 @@
       },
       handleItemClick(path) {
         this.selectedItem = path;
+      },
+      generateReport() {
+        const doc = new jsPDF();
+  
+        doc.setFontSize(24);
+        doc.text('Student Exam Results Report', 20, 20);
+  
+        doc.setFontSize(18);
+        let yPosition = 40;
+        doc.text('Exam Results:', 20, yPosition);
+        yPosition += 10;
+  
+        doc.setFontSize(12);
+        this.examResults.forEach((result, index) => {
+          doc.text(`${index + 1}. ${result.name}`, 20, yPosition);
+          doc.text(`Score: ${result.score}`, 70, yPosition);
+          doc.text(`Grade: ${result.grade}`, 120, yPosition);
+          yPosition += 10;
+        });
+  
+        doc.save('student_exam_results.pdf');
       }
     }
   };
   </script>
   
   <style scoped>
-  .feedback-page {
+  .analysis-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -123,7 +155,7 @@
     flex: 1;
   }
   
-  .feedback-page h1 {
+  .analysis-page h1 {
     font-family: 'Arial', sans-serif;
     font-size: 24px;
     font-weight: bold;

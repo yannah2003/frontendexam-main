@@ -1,131 +1,154 @@
 <template>
   <div class="subject-container">
     <h4 class="subject-header">
-      <center>{{ isEditing ? 'Edit Subject' : 'Add Subject' }}</center>
+      <center>Add New Subject</center>
     </h4>
     <div class="subject-form">
-      <form @submit.prevent="addSubject" class="row mb-3">
-        <div class="col-md-6">
-          <label for="subjectName" class="form-label">Subject Name:</label>
-          <input type="text" id="subjectName" v-model="subjectName" class="form-control" required>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label for="subjectname" class="form-label">Subject Name:</label>
+          <input v-model="formData.subjectname" type="text" id="subjectname" class="form-control" required>
         </div>
-        <div class="col-md-6">
-          <label for="yearLevel" class="form-label">Year Level:</label>
-          <select id="yearLevel" v-model="yearLevel" class="form-control" required>
-            <option value="" disabled>Select Year Level</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
+
+        <div class="col-md-4">
+          <label for="yearlevel" class="form-label">Year Level:</label>
+          <select v-model="formData.yearlevel" id="yearlevel" class="form-control" required>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
           </select>
         </div>
-        <div class="col-md-6">
+
+        <div class="col-md-4">
           <label for="strand" class="form-label">Strand:</label>
-          <select id="strand" v-model="strand" class="form-control" required>
-            <option value="" disabled>Select Strand</option>
-            <option value="ICT">ICT</option>
+          <select v-model="formData.strand" id="strand" class="form-control" required>
             <option value="STEM">STEM</option>
-            <option value="HUMSS">HUMSS</option>
+            <option value="ICT">ICT</option>
+            <option value="HUMMS">HUMMS</option>
             <option value="ABM">ABM</option>
           </select>
         </div>
-        <div class="col-md-6">
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
           <label for="semester" class="form-label">Semester:</label>
-          <select id="semester" v-model="semester" class="form-control" required>
-            <option value="" disabled>Select Semester</option>
-            <option value="1st">1st Semester</option>
-            <option value="2nd">2nd Semester</option>
+          <select v-model="formData.semester" id="semester" class="form-control" required>
+            <option value="1st Quarter">1st Quarter</option>
+            <option value="2nd Quarter">2nd Quarter</option>
+            <option value="3rd Quarter">3rd Quarter</option>
+            <option value="4th Quarter">4th Quarter</option>
           </select>
         </div>
-        <div class="col-md-6">
-          <label for="subjectCode" class="form-label">Generated Code:</label>
+
+        <div class="col-md-4">
+          <label for="gen_code" class="form-label">Subject Code:</label>
           <div class="input-group">
-            <input type="text" id="subjectCode" v-model="subjectCode" class="form-control" readonly>
-            <button type="button" class="btn-generate" @click="generateCode">Generate Code</button>
+            <input v-model="formData.gen_code" type="text" id="gen_code" class="form-control" readonly>
+            <button type="button" class="btn btn-secondary" @click="generateSubjectCode">Generate Code</button>
           </div>
         </div>
-        <div class="col-md-6">
-          <label for="subjectImage" class="form-label">Upload Image:</label>
-          <input type="file" id="subjectImage" class="form-control" @change="handleImageUpload">
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="button" class="btn" @click="addSubject">
+          <i class="bi bi-file-earmark-plus"></i>
+          <span class="ms-2"><b>Add Subject</b></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div v-if="isModalVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Subject Details</h5>
+            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Subject Name:</strong> {{ formData.subjectname }}</p>
+            <p><strong>Year Level:</strong> {{ formData.yearlevel }}</p>
+            <p><strong>Strand:</strong> {{ formData.strand }}</p>
+            <p><strong>Semester:</strong> {{ formData.semester }}</p>
+            <p><strong>Subject Code:</strong> {{ formData.gen_code }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" @click="closeModal">Cancel</button>
+            <button type="button" class="btn-primary" @click="saveSubject">Add Subject</button>
+          </div>
         </div>
-        <div class="text-center mt-4">
-          <button type="submit" class="btn">
-            <i class="bi bi-plus-circle"></i>
-            <span class="ms-2"><b>{{ isEditing ? 'Update Subject' : 'Add Subject' }}</b></span>
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'TeacherAddSubject',
   data() {
     return {
-      isEditing: false,
-      subjectIndex: null,
-      subjectName: '',
-      yearLevel: '',
-      strand: '',
-      semester: '',
-      subjectCode: '',
-      subjectImage: null,
+      formData: {
+        subjectname: '',
+        yearlevel: '',
+        strand: '',
+        semester: '',
+        gen_code: ''
+      },
+      isModalVisible: false,
     };
   },
   methods: {
     addSubject() {
-      const newSubject = {
-        subjectName: this.subjectName,
-        yearLevel: this.yearLevel,
-        strand: this.strand,
-        semester: this.semester,
-        code: this.subjectCode,
-        image: this.subjectImage ? URL.createObjectURL(this.subjectImage) : null,
-      };
-
-      let subjects = JSON.parse(localStorage.getItem('subjects')) || [];
-
-      if (this.isEditing) {
-        subjects[this.subjectIndex] = newSubject;
+      if (this.validateForm()) {
+        this.isModalVisible = true;
       } else {
-        subjects.push(newSubject);
+        alert('Please complete all required fields.');
       }
-
-      localStorage.setItem('subjects', JSON.stringify(subjects));
-      this.$router.push('/teacherlistofsubject');
     },
-    handleImageUpload(event) {
-      const file = event.target.files[0];
-      this.subjectImage = file;
-    },
-    generateCode() {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      const length = 6;
-      let code = '';
-      for (let i = 0; i < length; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
-      this.subjectCode = code;
-    },
-    loadSubjectDetails() {
-      if (this.$route.query.subject) {
-        const subject = JSON.parse(this.$route.query.subject);
-        this.subjectIndex = this.$route.query.index;
-        this.subjectName = subject.subjectName;
-        this.yearLevel = subject.yearLevel;
-        this.strand = subject.strand;
-        this.semester = subject.semester;
-        this.subjectCode = subject.code || '';
-        if (subject.image) {
-          this.subjectImage = subject.image;
+    validateForm() {
+      const requiredFields = ['subjectname', 'yearlevel', 'strand', 'semester', 'gen_code'];
+      for (const field of requiredFields) {
+        if (!this.formData[field]) {
+          return false;
         }
-        this.isEditing = true;
       }
+      return true;
     },
-  },
-  mounted() {
-    this.loadSubjectDetails();
-  },
+    closeModal() {
+      this.isModalVisible = false;
+    },
+    generateSubjectCode() {
+      // Generate a random subject code with 1 number and 6 letters
+      const letters = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const number = Math.floor(Math.random() * 10);
+      this.formData.gen_code = `${number}${letters}`;
+    },
+    async saveSubject() {
+      const token = localStorage.getItem('token');
+      try {
+        await axios.post('http://localhost:8000/api/store3', this.formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        alert('Subject added successfully');
+        this.isModalVisible = false;
+        // Reset form data
+        this.formData = {
+          subjectname: '',
+          yearlevel: '',
+          strand: '',
+          semester: '',
+          gen_code: ''
+        };
+      } catch (error) {
+        alert('Error adding subject: ' + (error.response.data.message || error.message));
+      }
+    }
+  }
 };
 </script>
 
@@ -157,36 +180,51 @@ export default {
   color: #343a40;
 }
 
+.modal-content {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 2px solid #045d26;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .form-control {
   border-radius: 5px;
   border: 2px solid #03721b;
 }
 
-.input-group .btn-generate {
-  background-color: #8FD6A4;
+.input-group .btn {
+  border-radius: 0 5px 5px 0;
   border: 2px solid #03721b;
-  color: rgb(5, 1, 1);
   font-family: 'Georgia', serif;
-  padding: 5px 10px;
-  font-size: 14px;
-  border-radius: 5px;
 }
 
-.input-group .btn-generate:hover {
-  background-color: #075e0e;
-  border-color: #02070c;
-  color: white;
+.btn-secondary {
+  background-color: #7a7f7c;
+  border: 2px solid #030503;
+  color: rgb(27, 12, 12);
+  padding: 5px;
+  font-size: 18px;
+  width: auto;
+}
+
+.btn-primary {
+  background-color: #03953d;
+  border: 2px solid #030503;
+  color: rgb(27, 12, 12);
+  padding: 5px;
+  font-size: 18px;
+  width: auto;
 }
 
 .btn {
   background-color: #38A05D;
   border: 2px solid #03721b;
   color: rgb(5, 1, 1);
-  font-family: 'Georgia', serif;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
-  width: 30%;
+ 
 }
 
 .btn:hover {
@@ -197,5 +235,13 @@ export default {
 
 .text-center {
   text-align: center;
+}
+
+.modal.show.d-block {
+  display: block;
+}
+
+.modal-backdrop {
+  display: none;
 }
 </style>

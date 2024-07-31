@@ -5,8 +5,8 @@
       <div class="filter-dropdown">
         <select v-model="filterBySemester" class="form-select">
           <option value="">All</option>
-          <option value="1st">1st Semester</option>
-          <option value="2nd">2nd Semester</option>
+          <option value="1st Semester">1st Semester</option>
+          <option value="2nd Semester">2nd Semester</option>
         </select>
       </div>
     </div>
@@ -21,10 +21,10 @@
         <img v-if="subject.image" :src="subject.image" class="card-img-top" alt="Subject Image">
         <img v-else :src="default_image_url" class="card-img-top" alt="Default Image">
         <div class="card-body">
-          <h5 class="card-title">{{ subject.subjectName }}</h5>
+          <h5 class="card-title">{{ subject.subjectname }}</h5>
           <p class="card-text">
             <strong>Strand:</strong> {{ subject.strand }}<br>
-            <strong>Year Level:</strong> {{ subject.yearLevel }}<br>
+            <strong>Year Level:</strong> {{ subject.yearlevel }}<br>
             <strong>Semester:</strong> {{ subject.semester }}
           </p>
         </div>
@@ -38,11 +38,13 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'TeacherListOfSubjects',
   data() {
     return {
-      subjects: JSON.parse(localStorage.getItem('subjects')) || [],
+      subjects: [],
       filterBySemester: '',
       default_image_url: 'https://t3.ftcdn.net/jpg/04/45/77/54/360_F_445775426_yx3Wl5UCTJOom5lSryjYYQjDkes0X23i.jpg', // Default image URL
     };
@@ -57,17 +59,33 @@ export default {
     },
   },
   methods: {
+    async fetchSubjects() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.get('http://localhost:8000/api/subjects', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        this.subjects = response.data.data;
+        localStorage.setItem('subjects', JSON.stringify(this.subjects));
+      } catch (error) {
+        console.error('Error fetching subjects:', error.response?.data?.message || error.message);
+      }
+    },
     goToAddSubject() {
       this.$router.push('/teacheraddsubject');
     },
     redirectToSubjectPage(subject) {
-      console.log('Redirecting to SubjectPage:', subject);
       if (subject.id) {
         this.$router.push({ name: 'SubjectPage', params: { subjectId: subject.id } });
       } else {
         console.error('Subject ID is missing:', subject);
       }
     },
+  },
+  created() {
+    this.fetchSubjects();
   },
 };
 </script>
@@ -96,7 +114,6 @@ export default {
   color: rgb(6, 0, 0);
   padding: 10px;
   border-radius: 8px 8px 0 0;
-
   font-family: 'Georgia', serif;
 }
 
