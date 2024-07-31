@@ -18,6 +18,7 @@
         <div class="col-md-4 d-flex align-items-center">
           <label for="userPosition" class="form-label me-2">SELECT POSITION:</label>
           <select v-model="selectedPosition" class="form-select" id="userPosition">
+            <option value="">All Positions</option>
             <option v-for="position in positions" :key="position" :value="position">{{ position }}</option>
           </select>
         </div>
@@ -54,7 +55,7 @@
             <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
-            <td class="text-center">{{ item.position }}</td>
+            <td class="text-center">{{ item.teacher_Position }}</td>
             <td class="text-center">{{ formatDate(item.created_at) }}</td>
             <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
@@ -154,7 +155,7 @@ export default {
       showModal: false,
       sortDirection: 'asc', // default sort direction
       selectedPosition: '',
-      positions: ['All Positions', 'Teacher 1', 'Teacher 2', 'Teacher 3' , ''],
+      positions: ['Teacher 1', 'Teacher 2', 'Teacher III'],
       serverItems: [],
       currentUser: {},  // Holds the user data being edited
       showPassword: false  // Track password visibility state
@@ -166,12 +167,12 @@ export default {
         const idnumberStr = item.idnumber ? item.idnumber.toString().toLowerCase() : '';
         const searchLower = this.search.toLowerCase();
         return (
-          (!this.selectedPosition || item.positions === this.selectedPosition) &&
+          (this.selectedPosition === '' || item.teacher_Position === this.selectedPosition) &&
           (idnumberStr.includes(searchLower) ||
           (item.username && item.username.toLowerCase().includes(searchLower)) ||
           (item.lname && item.lname.toLowerCase().includes(searchLower)) ||
           (item.fname && item.fname.toLowerCase().includes(searchLower)) ||
-          (item.mname && item.mname.toLowerCase().includes(searchLower)))
+          (item.email && item.email.toLowerCase().includes(searchLower)))
         );
       });
     },
@@ -185,29 +186,37 @@ export default {
   },
 
   methods: {
-    fetchData() {
-      axios.get('http://localhost:8000/api/users/teachers')
-        .then(response => {
-          this.serverItems = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    },
+    async fetchData() {
+    try {
+      const response = await axios.get('http://localhost:8000/api/index', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      this.serverItems = response.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  },
     openModal(user) {
       this.currentUser = { ...user };
       this.showModal = true;
     },
     saveChanges() {
-      axios.put(`http://localhost:8000/api/user/${this.currentUser.id}`, this.currentUser)
-        .then(() => {
-          this.fetchData();
-          this.showModal = false;
-        })
-        .catch(error => {
-          console.error('Error saving changes:', error);
-        });
-    },
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+    axios.put(`http://localhost:8000/api/user/${this.currentUser.id}`, this.currentUser, {
+      headers: {
+        Authorization: `Bearer ${token}` // Add the token to the request headers
+      }
+    })
+      .then(() => {
+        this.fetchData();
+        this.showModal = false;
+      })
+      .catch(error => {
+        console.error('Error saving changes:', error);
+      });
+  },
     removeUser(user) {
       axios.delete(`http://localhost:8000/api/users/${user.id}`)
         .then(() => {

@@ -280,7 +280,7 @@ export default {
 
 .drawer {
   height: 100vh;
-  width: 250px;
+  width: 270px;
   padding: 10px;
   background-color: white;
   border-right: 1px solid #ddd;
@@ -290,10 +290,9 @@ export default {
   color: #333;
   text-decoration: none;
   background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+ 
   margin: 10px 0;
-  padding: 10px;
+  padding: 5px;
   font-family: 'Arial', sans-serif;
   font-size: 16px;
   font-weight: bold;
