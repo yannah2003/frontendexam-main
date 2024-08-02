@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="container bg-light p-4 border rounded-bottom">
+  <div class="container-fluid ">
     <h4 class="text-center">Manage STUDENT Users</h4><br>
     <div class="row mb-4 justify-content-end align-items-center">
       <div class="col-md-4 d-flex align-items-center">
@@ -68,7 +68,7 @@
     </table>
   </div>
 
-  <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+  <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -247,11 +247,9 @@ mounted() {
 
 
 <style scoped>
-.container {
-margin-top: 10px;
-background-color: #f8f9fa;
-border: 1px solid #dee2e6;
-border-radius: 5px;
+.container-fluid {
+
+
 padding: 20px;
 
 }

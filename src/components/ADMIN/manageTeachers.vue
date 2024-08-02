@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container bg-light p-4 border rounded-bottom">
+    <div class="container-fluid ">
       <h4 class="text-center">Manage Users TEACHERS</h4><br>
       <div class="row mb-4 justify-content-end align-items-center">
         <div class="col-md-4 d-flex align-items-center">
@@ -68,7 +68,7 @@
     </div>
 
     <!-- Modal -->
-    <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+    <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-md-4">
                   <label for="position" class="form-label">Position:</label>
-                  <input type="text" id="position" v-model="currentUser.position" class="form-control" required>
+                  <input type="text" id="position" v-model="currentUser.teacher_Position" class="form-control" required>
                 </div>
               </div>
               <div class="row mb-3">
@@ -243,11 +243,9 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.container-fluid {
   margin-top: 10px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+
   padding: 20px;
 }
 
