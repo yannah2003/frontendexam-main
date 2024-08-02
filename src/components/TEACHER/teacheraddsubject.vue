@@ -22,7 +22,7 @@
           <label for="strand" class="form-label">Strand:</label>
           <select v-model="formData.strand" id="strand" class="form-control" required>
             <option value="STEM">STEM</option>
-            <option value="ICT">ICT</option>
+            <option value="TVL-ICT">TVL-ICT</option>
             <option value="HUMMS">HUMMS</option>
             <option value="ABM">ABM</option>
           </select>
