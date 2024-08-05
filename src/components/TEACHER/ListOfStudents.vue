@@ -34,7 +34,7 @@
   
   <script>
   export default {
-    name: 'ListOfTheStudentinTheSubjects',
+    name: 'ListOfTheStudentinSubjects',
     data() {
       return {
         selectedItem: '',

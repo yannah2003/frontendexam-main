@@ -1,5 +1,5 @@
 <template>
-    <div class="feedback-page">
+    <div class="analysis-page">
       <div class="container-fluid">
         <div class="row">
           <!-- Drawer Section -->
@@ -10,7 +10,6 @@
                   <i class="bi bi-arrow-left fs-4"></i> Back to List of Subjects
                 </span>
               </router-link>
-
               <router-link v-for="(item, index) in items" :key="index" :to="item.path" class="list-group" :class="{ active: selectedItem === item.path }" @click="handleItemClick(item.path)">
                 <span class="icon-label">
                   <i :class="item.icon"></i> {{ item.label }}
@@ -26,7 +25,7 @@
   
           <!-- Main Content Section -->
           <div class="col-md-10 right-column">
-            <h1>Feedback</h1>
+            <h1>List of Students</h1>
           </div>
         </div>
       </div>
@@ -35,12 +34,12 @@
   
   <script>
   export default {
-    name: 'FeedbacksofStudent',
+    name: 'StudentsListSubject',
     data() {
       return {
         selectedItem: '',
         items: [
-         { path: '/studentslist', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
+          { path: '/studentslist', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
           { path: '/AddExam', label: 'Add Exam', icon: 'bi bi-file-earmark-text fs-4' },
           { path: '/Feedback', label: 'Feedback', icon: 'bi bi-chat-square-text fs-4' },
           { path: '/ItemAnalysis', label: 'Item Analysis', icon: 'bi bi-graph-up-arrow fs-4' },
@@ -61,7 +60,7 @@
   </script>
   
   <style scoped>
-  .feedback-page {
+  .analysis-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -125,7 +124,7 @@
     flex: 1;
   }
   
-  .feedback-page h1 {
+  .analysis-page h1 {
     font-family: 'Arial', sans-serif;
     font-size: 24px;
     font-weight: bold;

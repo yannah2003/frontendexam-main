@@ -156,7 +156,7 @@ h3 {
   color: rgb(6, 0, 0);
   padding: 10px;
   border-radius: 8px 8px 0 0;
-  font-family: 'Georgia', serif;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   margin: 20px;
 }
 
@@ -172,8 +172,8 @@ h3 {
 }
 
 .box {
-  border: 2px solid darkgreen;
-  background-color: #50c878;
+  border: 2px solid #6db3cb;
+  background-color: #6db3cb;
   border-radius: 10px;
   height: 130px;
   padding: 10px;

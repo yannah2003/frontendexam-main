@@ -9,20 +9,18 @@
                 <i class="bi bi-arrow-left fs-4"></i> Back to List of Subjects
               </span>
             </router-link>
+
             <router-link v-for="(item, index) in items" :key="index" :to="item.path" class="list-group" :class="{ active: selectedItem === item.path }" @click="handleItemClick(item.path)">
-              <span class="icon-label">
-                <i :class="item.icon"></i> {{ item.label }}
-              </span>
-            </router-link>
-            <div class="list-group logOut" @click="handleLogoutClick" style="margin-top: 280px;">
-              <span class="icon-label">
-                <i class="bi bi-box-arrow-left fs-4"></i> LOG OUT
-              </span>
-            </div>
+                <span class="icon-label">
+                  <i :class="item.icon"></i> {{ item.label }}
+                </span>
+              </router-link>
+              <div class="list-group logOut" @click="handleLogoutClick" style="margin-top: auto;">
+                <span class="icon-label">
+                  <i class="bi bi-box-arrow-left fs-4"></i> LOG OUT
+                </span>
+              </div>
           </div>
-        </div>
-        <div class="col-md-10 right-column" @click="handleContentClick">
-          <router-view></router-view>
         </div>
       </div>
     </div>
@@ -36,7 +34,7 @@ export default {
     return {
       selectedItem: '',
       items: [
-      { path: '/ListOfStudent', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
+        { path: '/studentslist', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
         { path: '/AddExam', label: 'Add Exam', icon: 'bi bi-file-earmark-text fs-4' },
         { path: '/Feedback', label: 'Feedback', icon: 'bi bi-chat-square-text fs-4' },
         { path: '/ItemAnalysis', label: 'Item Analysis', icon: 'bi bi-graph-up-arrow fs-4' },
@@ -77,6 +75,7 @@ export default {
   border-right: 1px solid #ddd;
   height: 100vh;
   width: 250px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .right-column {

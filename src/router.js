@@ -21,7 +21,7 @@ import TeacherAddSubject from './components/TEACHER/teacheraddsubject.vue';
 import TeacherListsofSubject from './components/TEACHER/teacherlistofsubject.vue';
 import ManagingSubjects from './components/TEACHER/managesubject.vue';
 import SubjectPages from './components/TEACHER/subjectspage.vue';
-import ListOfTheStudentinTheSubjects from './components/TEACHER/ListOfStudents.vue';
+import StudentsListSubject from './components/TEACHER/studentslist.vue';
 import Addexaminations from './components/TEACHER/AddExam.vue';
 import CreationOfExaminations from './components/TEACHER/CreatingExam.vue';
 import FeedbacksofStudent from './components/TEACHER/Feedback.vue';
@@ -60,7 +60,7 @@ const routes = [
   { path: '/teacherlistofsubject', component: TeacherListsofSubject},
   { path: '/managesubject', component: ManagingSubjects},
   { path: '/subjectspage/:subjectId', component: SubjectPages, name: 'SubjectPage' },
-  { path: '/ListOfStudents', component: ListOfTheStudentinTheSubjects},
+  { path: '/studentslist', component: StudentsListSubject},
   { path: '/AddExam', component: Addexaminations },
   { path: '/CreatingExam', component: CreationOfExaminations},
   { path: '/Feedback', component: FeedbacksofStudent },

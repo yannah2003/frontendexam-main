@@ -156,7 +156,7 @@ export default {
 .subject-container {
   padding: 20px;
   background-color: #f8f9fa94;
-  border: 1px solid #0b355e;
+  border: 1px solid #769abd;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 900px;
@@ -164,8 +164,8 @@ export default {
 }
 
 .subject-header {
-  background-color: #8FD6A4;
-  color: rgb(6, 0, 0);
+  background-color: #3e7081;;
+  color: rgb(238, 242, 246);
   padding: 10px;
   border-radius: 8px 8px 0 0;
   font-family: 'Georgia', serif;
@@ -183,19 +183,19 @@ export default {
 .modal-content {
   padding: 20px;
   background-color: #f8f9fa;
-  border: 2px solid #045d26;
+  border: 2px solid #add8e6;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-control {
   border-radius: 5px;
-  border: 2px solid #03721b;
+  border: 2px solid #add8e6;
 }
 
 .input-group .btn {
   border-radius: 0 5px 5px 0;
-  border: 2px solid #03721b;
+  border: 2px solid #add8e6;
   font-family: 'Georgia', serif;
 }
 
@@ -209,7 +209,7 @@ export default {
 }
 
 .btn-primary {
-  background-color: #03953d;
+  background-color: #add8e6;;
   border: 2px solid #030503;
   color: rgb(27, 12, 12);
   padding: 5px;
@@ -218,8 +218,8 @@ export default {
 }
 
 .btn {
-  background-color: #38A05D;
-  border: 2px solid #03721b;
+  background-color: #add8e6;
+  border: 2px solid #add8e6;
   color: rgb(5, 1, 1);
   padding: 10px 20px;
   font-size: 16px;
@@ -228,9 +228,9 @@ export default {
 }
 
 .btn:hover {
-  background-color: #2C8C4F;
+  background-color: #add8e6;
   border-color: #02070c;
-  color: white;
+  color: rgb(25, 54, 96);
 }
 
 .text-center {

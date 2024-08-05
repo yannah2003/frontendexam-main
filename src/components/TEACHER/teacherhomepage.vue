@@ -160,7 +160,7 @@ export default {
         { path: '/teacheraddsubject', label: 'Add Subjects', icon: 'bi bi-file-earmark-plus-fill fs-4' },
         { path: '/teacherlistofsubject', label: 'List of Subjects', icon: 'bi bi-file-earmark-fill fs-4' },
         { path: '/managesubject', label: 'Manage Subject Details', icon: 'bi bi-gear-fill fs-4' },
-        { path: '/subjectspage', label: 'Subject Page', icon: 'bi bi-book-fill fs-4' },
+       
       ],
     };
   },
@@ -292,12 +292,12 @@ export default {
   font-size: 40px;
 }
 .modal-content {
-  border: 2px solid #28a745; /* Green border */
+  border: 2px solid #add8e6; /* Green border */
   border-radius: 10px; /* Rounded corners */
 }
 
 .modal-header {
-  background-color:#50C878; /* Green header background */
+  background-color:#add8e6; /* Green header background */
   color: #130404; /* White text color */
   border-bottom: 1px solid #ddd; /* Light border below header */
 }
@@ -313,7 +313,7 @@ export default {
 }
 
 .navbar {
-  background-color: #50C878;
+  background-color: #add8e6;;
 }
 
 .drawer {
@@ -342,7 +342,7 @@ export default {
 .drawer .list-group.active,
 .drawer .list-group:hover,
 .drawer .logOut:hover {
-  background-color: #50C878;
+  background-color: #4893ac;
   color: white;
 }
 

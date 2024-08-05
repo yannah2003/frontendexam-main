@@ -1,5 +1,5 @@
 <template>
-  <div class="container bg-light p-4 border rounded-bottom mt-4">
+  <div class="container bg-light p-4 border rounded-bottom mt-4 mx-auto">
     <div class="title-container text-center">
       <h2>Manage Subjects</h2>
     </div>
@@ -49,7 +49,7 @@
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-success add-button" @click="goToAddSubject">Add Subject</button>
+   
   </div>
 </template>
 
@@ -91,9 +91,7 @@ export default {
         console.error('Error fetching subjects:', error.response?.data?.message || error.message);
       }
     },
-    goToAddSubject() {
-      this.$router.push('/teacheraddsubject');
-    },
+    
     editSubject(index) {
       const subject = this.subjects[index];
       this.$router.push({ path: '/teacheraddsubject', query: { subject: JSON.stringify(subject), index } });
@@ -126,6 +124,7 @@ export default {
   border: 1px solid #dee2e6;
   border-radius: 5px;
   padding: 20px;
+  max-width: 1200px;
 }
 
 h2 {

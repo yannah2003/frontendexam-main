@@ -39,11 +39,12 @@
       return {
         selectedItem: '',
         items: [
-          { path: '/ListOfStudent', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
+        { path: '/studentslist', label: 'List of Students', icon: 'bi bi-speedometer2 fs-4' },
           { path: '/AddExam', label: 'Add Exam', icon: 'bi bi-file-earmark-text fs-4' },
           { path: '/Feedback', label: 'Feedback', icon: 'bi bi-chat-square-text fs-4' },
           { path: '/ItemAnalysis', label: 'Item Analysis', icon: 'bi bi-graph-up-arrow fs-4' },
-          { path: '/PerformanceTracking', label: 'Performance Tracking', icon: 'bi bi-speedometer2 fs-4' }
+          { path: '/PerformanceTracking', label: 'Performance Tracking', icon: 'bi bi-speedometer2 fs-4' },
+          { path: '/GenerateReport', label: 'Report Generating', icon: 'bi bi-speedometer2 fs-4' }
         ]
       };
     },
