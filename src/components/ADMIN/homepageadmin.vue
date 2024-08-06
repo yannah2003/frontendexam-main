@@ -266,6 +266,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .logo {
   font-family: 'Segoe UI Black', sans-serif;
@@ -273,14 +274,34 @@ export default {
   text-shadow: 1px 1px 2px black;
   font-size: 40px;
 }
+.modal-content {
+  border: 2px solid #add8e6; /* Green border */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.modal-header {
+  background-color:#add8e6; /* Green header background */
+  color: #130404; /* White text color */
+  border-bottom: 1px solid #ddd; /* Light border below header */
+}
+
+.modal-title {
+  font-size: 1.25rem; /* Larger font size for the title */
+  font-weight: bold;
+}
+
+
+.modal-dialog.modal-md {
+  max-width: 50%;
+}
 
 .navbar {
-  background-color: #50C878;
+  background-color: #add8e6;;
 }
 
 .drawer {
-  height: 100vh;
-  width: 270px;
+  height: auto;
+  width: 250px;
   padding: 10px;
   background-color: white;
   border-right: 1px solid #ddd;
@@ -290,26 +311,21 @@ export default {
   color: #333;
   text-decoration: none;
   background-color: white;
- 
+  border: 1px solid #ddd;
+  border-radius: 4px;
   margin: 10px 0;
-  padding: 5px;
+  padding: 10px;
   font-family: 'Arial', sans-serif;
   font-size: 16px;
   font-weight: bold;
   display: flex;
   align-items: center;
 }
-.label{
-
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-}
 
 .drawer .list-group.active,
 .drawer .list-group:hover,
 .drawer .logOut:hover {
-  background-color: #50C878;
+  background-color: #4893ac;
   color: white;
 }
 
@@ -343,17 +359,36 @@ export default {
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  width: 200px;
-  top: 50px;
-  left: -210px; /* Positioning to the left of the profile icon */
+
+  width: 250px;
+  top: 50px; /* Adjust this value based on where you want it to appear */
+  left: -170px; /* Adjust this value to position it relative to the profile icon */
   opacity: 0;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 16px;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .popover.show {
   opacity: 1;
   transform: translateX(0);
+}
+
+.popover-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px; /* Adjust as needed */
+}
+
+.field-container i {
+  margin-left: 10px; /* Adjust spacing as needed */
+  cursor: pointer;
 }
 
 .popover-arrow {
@@ -364,7 +399,7 @@ export default {
   border-style: solid;
   border-color: white transparent transparent transparent;
   top: 50%;
-  right: 100%; /* Position the arrow on the left side */
+  right: 100%; /* Position the arrow on the left side of the popover */
   transform: translateY(-50%);
 }
 
@@ -404,44 +439,8 @@ export default {
 .container2 {
   margin-right: 0;
 }
-
-.dropdown-submenu {
-  position: relative;
-}
-
-.dropdown-submenu .dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  border-radius: 0.25rem;
-}
-
-.dropdown-submenu:hover .dropdown-menu {
-  display: block;
-}
-
-.dropdown-menu .dropdown-item {
-  padding: 0.25rem 1.5rem;
-  font-size: 1rem;
-  color: #212529;
-  text-decoration: none;
-  display: block;
-  white-space: nowrap;
-}
-
-.dropdown-menu .dropdown-item:hover {
-  background-color: rgba(0, 145, 7, 0.1);
-}
-
-/* Highlight the parent dropdown item when its submenu is active */
-.dropdown-submenu.active > .dropdown-item {
-  background-color: #50C878;
-  color: white;
-}
-.dropdown-menu .dropdown-item.active {
-  background-color: #50C878;
-  color: white;
-}
-
-
 </style>
+
+
+
+

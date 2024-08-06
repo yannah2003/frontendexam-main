@@ -59,7 +59,7 @@
   
   .left {
     background-color: #f8f9fa; /* Light grey background for left column */
-    border-right: 1px solid #3b1818; /* Light border to separate columns */
+    border: 1px solid #3b1818; /* Light border to separate columns */
     display: flex;
     align-items: center;
     justify-content: center;

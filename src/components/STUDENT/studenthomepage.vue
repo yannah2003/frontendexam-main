@@ -304,176 +304,182 @@ export default {
 };
 </script>
 
-<style scoped>
-.logo {
-  font-family: 'Segoe UI Black', sans-serif;
-  color: white;
-  text-shadow: 1px 1px 2px black;
-  font-size: 40px;
-}
-.modal-content {
-  border: 2px solid #28a745; /* Green border */
-  border-radius: 10px; /* Rounded corners */
-}
 
-.modal-header {
-  background-color:#50C878; /* Green header background */
-  color: #130404; /* White text color */
-  border-bottom: 1px solid #ddd; /* Light border below header */
-}
-
-.modal-title {
-  font-size: 1.25rem; /* Larger font size for the title */
-  font-weight: bold;
-}
-
-
-.modal-dialog.modal-md {
-  max-width: 50%;
-}
-
-.navbar {
-  background-color: #50C878;
-}
-
-.drawer {
-  height: auto;
-  width: 250px;
-  padding: 10px;
-  background-color: white;
-  border-right: 1px solid #ddd;
-}
-
-.drawer .list-group {
-  color: #333;
-  text-decoration: none;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin: 10px 0;
-  padding: 10px;
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-}
-
-.drawer .list-group.active,
-.drawer .list-group:hover,
-.drawer .logOut:hover {
-  background-color: #50C878;
-  color: white;
-}
-
-.drawer .icon-label {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.drawer .icon-label i {
-  margin-right: 10px;
-}
-
-.drawer .icon-label .label {
-  flex: 1;
-}
-
-.content {
-  flex-grow: 1;
-  min-height: 100vh;
-  width: 100%;
-  background-color: white;
-}
-
-.popover {
-  position: absolute;
-  z-index: 1050;
-  display: block;
-  font-family: Arial, sans-serif;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-  width: 250px;
-  top: 50px; /* Adjust this value based on where you want it to appear */
-  left: -170px; /* Adjust this value to position it relative to the profile icon */
-  opacity: 0;
-  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  font-size: 16px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.popover.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.popover-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.field-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px; /* Adjust as needed */
-}
-
-.field-container i {
-  margin-left: 10px; /* Adjust spacing as needed */
-  cursor: pointer;
-}
-
-.popover-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 5px;
-  border-style: solid;
-  border-color: white transparent transparent transparent;
-  top: 50%;
-  right: 100%; /* Position the arrow on the left side of the popover */
-  transform: translateY(-50%);
-}
-
-.dropdown-menu {
-  background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  display: block;
-}
-
-.dropdown-item {
-  padding: 0.25rem 1.5rem;
-  font-size: 1rem;
-  color: #212529;
-  text-decoration: none;
-  display: block;
-  clear: both;
-  font-weight: 400;
-  white-space: nowrap;
-  background-color: transparent;
-  border: 0;
-}
-
-.dropdown-item:hover {
-  background-color: rgba(0, 145, 7, 0.1);
-}
-
-.container {
-  margin-left: 0;
-}
-
-.container2 {
-  margin-right: 0;
-}
-</style>
+  <style scoped>
+  .logo {
+    font-family: 'Segoe UI Black', sans-serif;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    font-size: 40px;
+  }
+  .modal-content {
+    border: 2px solid #add8e6; /* Green border */
+    border-radius: 10px; /* Rounded corners */
+  }
+  
+  .modal-header {
+    background-color:#add8e6; /* Green header background */
+    color: #130404; /* White text color */
+    border-bottom: 1px solid #ddd; /* Light border below header */
+  }
+  
+  .modal-title {
+    font-size: 1.25rem; /* Larger font size for the title */
+    font-weight: bold;
+  }
+  
+  
+  .modal-dialog.modal-md {
+    max-width: 50%;
+  }
+  
+  .navbar {
+    background-color: #add8e6;;
+  }
+  
+  .drawer {
+    height: auto;
+    width: 250px;
+    padding: 10px;
+    background-color: white;
+    border-right: 1px solid #ddd;
+  }
+  
+  .drawer .list-group {
+    color: #333;
+    text-decoration: none;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  
+  .drawer .list-group.active,
+  .drawer .list-group:hover,
+  .drawer .logOut:hover {
+    background-color: #4893ac;
+    color: white;
+  }
+  
+  .drawer .icon-label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .drawer .icon-label i {
+    margin-right: 10px;
+  }
+  
+  .drawer .icon-label .label {
+    flex: 1;
+  }
+  
+  .content {
+    flex-grow: 1;
+    min-height: 100vh;
+    width: 100%;
+    background-color: white;
+  }
+  
+  .popover {
+    position: absolute;
+    z-index: 1050;
+    display: block;
+    font-family: Arial, sans-serif;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+    width: 250px;
+    top: 50px; /* Adjust this value based on where you want it to appear */
+    left: -170px; /* Adjust this value to position it relative to the profile icon */
+    opacity: 0;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .popover.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .popover-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .field-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px; /* Adjust as needed */
+  }
+  
+  .field-container i {
+    margin-left: 10px; /* Adjust spacing as needed */
+    cursor: pointer;
+  }
+  
+  .popover-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 5px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+    top: 50%;
+    right: 100%; /* Position the arrow on the left side of the popover */
+    transform: translateY(-50%);
+  }
+  
+  .dropdown-menu {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: block;
+  }
+  
+  .dropdown-item {
+    padding: 0.25rem 1.5rem;
+    font-size: 1rem;
+    color: #212529;
+    text-decoration: none;
+    display: block;
+    clear: both;
+    font-weight: 400;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(0, 145, 7, 0.1);
+  }
+  
+  .container {
+    margin-left: 0;
+  }
+  
+  .container2 {
+    margin-right: 0;
+  }
+  </style>
+  
+  
+  
+  
+  

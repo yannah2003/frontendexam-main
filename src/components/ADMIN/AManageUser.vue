@@ -222,12 +222,12 @@ export default {
 
 <style scoped>
 .container-fluid {
-
+  margin-top: 10px;
   padding: 20px;
 }
 
 h4 {
-  background-color:#8FD6A4;
+  background-color: #87CEFA; /* Sky blue background */
   color: rgb(6, 0, 0);
   padding: 10px;
   border-radius: 8px 8px 0 0;
@@ -242,7 +242,7 @@ h4 {
 }
 
 .custom-icon:hover {
-  color: rgb(18, 211, 173);
+  color: rgb(18, 108, 211);
   font-size: 30px;
 }
 
@@ -251,61 +251,64 @@ h4 {
 }
 
 .modal-content {
-  border: 2px solid #28a745; /* Green border */
+  border: 2px solid #87CEFA; /* Sky blue border */
   border-radius: 10px; /* Rounded corners */
 }
 
 .modal-header {
-  background-color:#50C878; /* Green header background */
-  color: #130404;
+  background-color: #00BFFF; /* Deep sky blue header background */
+  color: #130404; /* Dark text color */
   border-bottom: 1px solid #ddd; /* Light border below header */
 }
 
 .modal-title {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* Larger font size for the title */
+  font-weight: bold;
+}
+
+.btn-close {
+  filter: invert(1); /* White close button icon */
 }
 
 .modal-body {
-  padding: 1.5rem; /* More padding for the body */
+  background-color: #f0f8ff; /* Alice blue background for form */
 }
 
-.modal-footer {
-  display: flex;
-  justify-content: space-between; /* Buttons on opposite ends */
-  border-top: 1px solid #ddd; /* Light border above footer */
+.input-group-text {
+  background-color: #e0ffff; /* Light cyan background for input labels */
+  border: 1px solid #ced4da; /* Light border around input labels */
+  color: #495057; /* Dark grey text color */
+}
+
+.form-control {
+  border-radius: 5px; /* Rounded corners for input fields */
+  border: 1px solid #ced4da; /* Light border around input fields */
 }
 
 .form-control:focus {
-  box-shadow: 0 0 5px rgba(72, 180, 97, 0.5); /* Green shadow */
-  border-color: #28a745; /* Green border */
+  border-color: #87CEFA; /* Sky blue border on focus */
+  box-shadow: 0 0 0 0.2rem rgba(135, 206, 250, 0.25); /* Sky blue shadow on focus */
 }
 
-.btn-primary {
-  background-color: #28a745;
-  border-color: #28a745;
-}
-
-.btn-primary:hover {
-  background-color: #218838;
-  border-color: #1e7e34;
+.modal-footer {
+  border-top: 1px solid #ddd; /* Light border above footer */
 }
 
 .btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #6c757d; /* Grey background for secondary button */
+  border: none;
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
+  background-color: #5a6268; /* Darker grey on hover */
 }
 
-.table-success {
-  background-color: #d4edda; /* Light green background */
-  color: #155724; /* Dark green text */
+.btn-primary {
+  background-color: #00BFFF; /* Deep sky blue background for primary button */
+  border: none;
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(0, 123, 255, 0.25); /* Light blue background */
+.btn-primary:hover {
+  background-color: #1E90FF; /* Dodger blue on hover */
 }
 </style>

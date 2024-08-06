@@ -35,7 +35,7 @@
 
       <!-- Table -->
       <table class="table table-bordered table-hover">
-        <thead class="table-success">
+        <thead class="table-primary">
           <tr>
             <th scope="col" class="text-center">No.</th>
             <th scope="col" class="text-center">LRN</th>
@@ -245,12 +245,11 @@ export default {
 <style scoped>
 .container-fluid {
   margin-top: 10px;
-
   padding: 20px;
 }
 
 h4 {
-  background-color: #8FD6A4;
+  background-color: #87CEFA; /* Sky blue background */
   color: rgb(6, 0, 0);
   padding: 10px;
   border-radius: 8px 8px 0 0;
@@ -265,21 +264,22 @@ h4 {
 }
 
 .custom-icon:hover {
-  color: rgb(18, 211, 173);
+  color: rgb(18, 108, 211);
   font-size: 30px;
 }
 
 .form-select {
   width: 200px;
 }
+
 .modal-content {
-  border: 2px solid #28a745; /* Green border */
+  border: 2px solid #87CEFA; /* Sky blue border */
   border-radius: 10px; /* Rounded corners */
 }
 
 .modal-header {
-  background-color:#50C878; /* Green header background */
-  color: #130404; /* White text color */
+  background-color: #00BFFF; /* Deep sky blue header background */
+  color: #130404; /* Dark text color */
   border-bottom: 1px solid #ddd; /* Light border below header */
 }
 
@@ -293,11 +293,11 @@ h4 {
 }
 
 .modal-body {
-  background-color: #f8f9fa; /* Light grey background for form */
+  background-color: #f0f8ff; /* Alice blue background for form */
 }
 
 .input-group-text {
-  background-color: #e9ecef; /* Light grey background for input labels */
+  background-color: #e0ffff; /* Light cyan background for input labels */
   border: 1px solid #ced4da; /* Light border around input labels */
   color: #495057; /* Dark grey text color */
 }
@@ -308,8 +308,8 @@ h4 {
 }
 
 .form-control:focus {
-  border-color: #28a745; /* Green border on focus */
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green shadow on focus */
+  border-color: #87CEFA; /* Sky blue border on focus */
+  box-shadow: 0 0 0 0.2rem rgba(135, 206, 250, 0.25); /* Sky blue shadow on focus */
 }
 
 .modal-footer {
@@ -326,11 +326,11 @@ h4 {
 }
 
 .btn-primary {
-  background-color: #28a745; /* Green background for primary button */
+  background-color: #00BFFF; /* Deep sky blue background for primary button */
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: #218838; /* Darker green on hover */
+  background-color: #1E90FF; /* Dodger blue on hover */
 }
 </style>
