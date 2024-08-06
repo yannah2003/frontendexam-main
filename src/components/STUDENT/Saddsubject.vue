@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <h3 style="margin-top: 20px;">Enrolled Subjects</h3>
     <button class="bi bi-plus-circle add-button" @click="showModal = true"></button>
 
     <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
@@ -25,14 +26,13 @@
       </div>
     </div>
 
-    <div v-if="subjects.length" class="mt-4">
-      <h3>Enrolled Subjects</h3>
+    <div v-if="subjects.length" class="mt-4" style="margin: 20px; align-items: center;">
       <div class="card-container">
         <div v-for="subject in subjects" :key="subject.id" class="card">
           <img :src="subject.imageUrl || require('@/assets/newlogo.png')" class="card-img" alt="Subject Image" />
           <div class="card-body">
             <h5 class="card-title">{{ subject.subject_name }}</h5>
-            <p class="card-text">{{ subject.student_fname }} {{ subject.student_lname }}</p>
+            <p class="card-text">{{ subject.teacher_fname }} {{ subject.teacher_lname }}</p>
           </div>
         </div>
       </div>
@@ -103,6 +103,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .container {
   margin-top: 20px;
@@ -119,18 +120,18 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 50px;
-  background-color: #38a05d;
+  background-color: #87ceeb; /* Sky blue background */
   border: none;
   color: #fff;
   cursor: pointer;
 }
 
 .add-button:hover {
-  background-color: #28a745;
+  background-color: #00bfff; /* Deep sky blue on hover */
 }
 
 .modal-header {
-  background-color: #50c878; /* Green header background */
+  background-color: #87ceeb; /* Sky blue header background */
   color: #fff;
   border-bottom: 1px solid #ddd; /* Light border below header */
 }
@@ -145,26 +146,26 @@ export default {
 }
 
 .modal-body {
-  background-color: #f8f9fa; /* Light grey background for form */
+  background-color: #f0f8ff; /* Alice blue background for form */
 }
 
 .form-control {
   border-radius: 5px; /* Rounded corners for input fields */
-  border: 2px solid #0c4e06; /* Light border around input fields */
+  border: 2px solid #87ceeb; /* Sky blue border around input fields */
 }
 
 .form-control:focus {
-  border-color: #28a745; /* Green border on focus */
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green shadow on focus */
+  border-color: #00bfff; /* Deep sky blue border on focus */
+  box-shadow: 0 0 0 0.2rem rgba(0, 191, 255, 0.25); /* Deep sky blue shadow on focus */
 }
 
 .btn-primary {
-  background-color: #38a05d; /* Green background for primary button */
+  background-color: #87ceeb; /* Sky blue background for primary button */
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: #50c878; /* Darker green on hover */
+  background-color: #00bfff; /* Deep sky blue on hover */
 }
 
 .alert {
@@ -175,15 +176,16 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 20px; /* Space between cards */
+
 }
 
 .card {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ddd;
+  border: 3px solid #2c71c190;
   border-radius: 8px;
   width: 20%; /* Responsive card width */
- width: 250px;
+  width: 250px;
   background-color: #fff;
 }
 
@@ -195,6 +197,7 @@ export default {
 
 .card-body {
   padding: 15px;
+  background-color: #00bfff36;
 }
 
 .card-title {
@@ -206,3 +209,5 @@ export default {
   font-size: 1rem;
 }
 </style>
+
+
