@@ -114,6 +114,12 @@ export default {
         manageUser: false,
         strand: false,
       },
+      isSubDropdownVisible: {
+        humss: false,
+        stem: false,
+        abm: false,
+        tvl: false,
+      },
       selectedItem: localStorage.getItem('selectedItem') || '/adashboard',
       items: [
         { path: '/adashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
@@ -126,6 +132,7 @@ export default {
     if (this.isLoggedIn) {
       this.fetchUserProfile();
     }
+    // Ensure the selected item matches the current route
     if (this.$route.path !== this.selectedItem) {
       this.$router.push(this.selectedItem);
     }
@@ -147,20 +154,21 @@ export default {
         this.error = error.response && error.response.data.message ? error.response.data.message : 'Failed to fetch user profile';
       }
     },
-    async handleLogout() {
+    async handlelogout() {
       try {
         const token = localStorage.getItem('token');
-        await axios.post('http://localhost:8000/api/logout', {}, {
+        const response = await axios.post('http://localhost:8000/api/logout', {}, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
+        console.log(response.data.message);
         localStorage.removeItem('token');
-        localStorage.removeItem('selectedItem');
+        localStorage.removeItem('selectedItem'); // Clear selected item on logout
         this.isLoggedIn = false;
         this.userProfile = null;
         this.$emit('logout');
-        this.$router.push('/login');
+        this.$router.push('/login'); // Redirect to login page after logout
       } catch (error) {
         console.error('Logout failed:', error);
       }
@@ -176,11 +184,12 @@ export default {
     },
     handleItemClick(path) {
       this.selectedItem = path;
-      localStorage.setItem('selectedItem', path);
+      localStorage.setItem('selectedItem', path); // Save selected item in local storage
+      this.selectedStrand = path.split('/') [2] || '',
       this.drawerVisible = false;
       this.isDropdownVisible.manageUser = false;
       this.isDropdownVisible.strand = false;
-      this.$router.push(path);
+      this.$router.push(path); // Ensure router navigates to the selected item
     },
     handleContentClick() {
       if (this.drawerVisible) {
@@ -190,13 +199,22 @@ export default {
       this.isDropdownVisible.manageUser = false;
       this.isDropdownVisible.strand = false;
     },
+    showSubDropdown(strand) {
+      this.isSubDropdownVisible[strand] = true;
+    },
+    hideSubDropdown(strand) {
+      this.isSubDropdownVisible[strand] = false;
+    },
   },
   beforeMount() {
     this.$router.push('/adashboard');
     this.selectedItem = '/adashboard';
+    this.selectedStrand = '';
   },
 };
 </script>
+
+
 <style scoped>
 .logo {
   font-family: 'Segoe UI Black', sans-serif;
