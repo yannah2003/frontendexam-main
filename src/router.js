@@ -8,9 +8,12 @@ import RegisterUser from './components/ADMIN/AregisterUser.vue'
 import ManageUserTeachers from './components/ADMIN/manageTeachers.vue';
 import ManageUserStudents from './components/ADMIN/manegeStudents.vue';
 // import StrandSection from './components/ADMIN/AStrandSection.vue';
-import HummsStrandPage from './components/ADMIN/STRAND/humms.vue';
-import AbmStrandPage from './components/ADMIN/STRAND/abm.vue';
-import StemStrandPage from './components/ADMIN/STRAND/stem.vue';
+import Humms11Page from './components/ADMIN/STRAND/humms11.vue';
+import Humms12Page from './components/ADMIN/STRAND/humms12.vue';
+import Abm11Page from './components/ADMIN/STRAND/abm11.vue';
+import Abm12Page from './components/ADMIN/STRAND/abm12.vue';
+import Stem11Page from './components/ADMIN/STRAND/stem11.vue';
+import Stem12Page from './components/ADMIN/STRAND/stem12.vue';
 import Tvl12Page from './components/ADMIN/STRAND/tvl12.vue';
 import Tvl11Page from './components/ADMIN/STRAND/tvl11.vue';
 import PieChart from './components/ADMIN/STRAND/piechart.vue';
@@ -49,9 +52,12 @@ const routes = [
   { path: '/manage_students', component: ManageUserStudents },
   { path: '/pie', component: PieChart},
   // { path: '/strand-section', component: StrandSection },
-  { path: '/strand-section/abm', component: AbmStrandPage},
-  { path: '/strand-section/humss', component: HummsStrandPage},
-  { path: '/strand-section/stem', component: StemStrandPage},
+  { path: '/strand-section/abm11', component: Abm11Page},
+  { path: '/strand-section/abm12', component: Abm12Page},
+  { path: '/strand-section/humss11', component: Humms11Page},
+  { path: '/strand-section/humss12', component: Humms12Page},
+  { path: '/strand-section/stem11', component: Stem11Page},
+  { path: '/strand-section/stem12', component: Stem12Page},
   { path: '/strand-section/tvl11', component: Tvl11Page},
   { path: '/strand-section/tvl12', component: Tvl12Page},
   { path: '/teacher', component: Teacher_homepage },

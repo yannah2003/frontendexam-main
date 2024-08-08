@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>HUMMS Page</h1>
+      <h1>HUMMS Page 1122222</h1>
       <p>Welcome to the HUMMS (Humanities and Social Sciences) strand page!</p>
       <p>This is where you can add specific content related to the HUMMS program.</p>
       <!-- Add more content as needed -->
@@ -9,7 +9,7 @@
   
   <script>
   export default {
-    name: 'HummsStrandPage',
+    name: 'Humms12Page',
   };
   </script>
   

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>AbmmmmmmmmmMMM Page</h1>
+      <h1>Stemmmmmmm Page 111112222222</h1>
     
       <!-- Add more content as needed -->
     </div>
@@ -8,7 +8,7 @@
   
   <script>
   export default {
-    name: 'AbmStrandPage',
+    name: 'Stem12Page',
   };
   </script>
   

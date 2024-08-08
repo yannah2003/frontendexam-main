@@ -64,71 +64,19 @@
         </div>
 
         <!-- Strand Dropdown -->
-        <div class="list-group dropdown">
-          <span class="icon-label dropdown-toggle" @click="toggleDropdown('strand')">
+        <div class="list-group dropdown" @click="toggleDropdown('strand')">
+          <span class="icon-label dropdown-toggle" style="cursor: pointer;">
             <i class="bi bi-grid-fill fs-4"></i> Strand & Section
           </span>
           <ul v-if="isDropdownVisible.strand" class="dropdown-menu show">
-            <li 
-              :class="['dropdown-submenu', { 'active': selectedStrand === 'humss' }]"
-              @mouseenter="showSubDropdown('humss')"
-              @mouseleave="hideSubDropdown('humss')"
-            >
-              <span class="dropdown-item dropdown-toggle">HUMSS</span>
-              <ul v-if="isSubDropdownVisible.humss" class="dropdown-menu">
-                <li :class="{ 'active': selectedItem === '/strand-section/humss/grade11' }">
-                  <router-link to="/strand-section/humss/grade11" class="dropdown-item" @click="handleItemClick('/strand-section/humss/grade11')">Grade 11</router-link>
-                </li>
-                <li :class="{ 'active': selectedItem === '/strand-section/humss/grade12' }">
-                  <router-link to="/strand-section/humss/grade12" class="dropdown-item" @click="handleItemClick('/strand-section/humss/grade12')">Grade 12</router-link>
-                </li>
-              </ul>
-            </li>
-            <li 
-              :class="['dropdown-submenu', { 'active': selectedStrand === 'stem' }]"
-              @mouseenter="showSubDropdown('stem')"
-              @mouseleave="hideSubDropdown('stem')"
-            >
-              <span class="dropdown-item dropdown-toggle">STEM</span>
-              <ul v-if="isSubDropdownVisible.stem" class="dropdown-menu">
-                <li :class="{ 'active': selectedItem === '/strand-section/stem/grade11' }">
-                  <router-link to="/strand-section/stem/grade11" class="dropdown-item" @click="handleItemClick('/strand-section/stem/grade11')">Grade 11</router-link>
-                </li>
-                <li :class="{ 'active': selectedItem === '/strand-section/stem/grade12' }">
-                  <router-link to="/strand-section/stem/grade12" class="dropdown-item" @click="handleItemClick('/strand-section/stem/grade12')">Grade 12</router-link>
-                </li>
-              </ul>
-            </li>
-            <li 
-              :class="['dropdown-submenu', { 'active': selectedStrand === 'abm' }]"
-              @mouseenter="showSubDropdown('abm')"
-              @mouseleave="hideSubDropdown('abm')"
-            >
-              <span class="dropdown-item dropdown-toggle">ABM</span>
-              <ul v-if="isSubDropdownVisible.abm" class="dropdown-menu">
-                <li :class="{ 'active': selectedItem === '/strand-section/abm/grade11' }">
-                  <router-link to="/strand-section/abm/grade11" class="dropdown-item" @click="handleItemClick('/strand-section/abm/grade11')">Grade 11</router-link>
-                </li>
-                <li :class="{ 'active': selectedItem === '/strand-section/abm/grade12' }">
-                  <router-link to="/strand-section/abm/grade12" class="dropdown-item" @click="handleItemClick('/strand-section/abm/grade12')">Grade 12</router-link>
-                </li>
-              </ul>
-            </li>
-            <li 
-              :class="['dropdown-submenu', { 'active': selectedStrand === 'tvl' }]"
-              @mouseenter="showSubDropdown('tvl')"
-              @mouseleave="hideSubDropdown('tvl')"
-            >
-              <span class="dropdown-item dropdown-toggle">TVL</span>
-              <ul v-if="isSubDropdownVisible.tvl" class="dropdown-menu">
-                <li :class="{ 'active': selectedItem === '/strand-section/tvl1' }">
-                  <router-link to="/strand-section/tvl11" class="dropdown-item" @click="handleItemClick('/strand-section/tvl11')">Grade 11</router-link>
-                </li>
-                <li :class="{ 'active': selectedItem === '/strand-section/tvl12' }">
-                  <router-link to="/strand-section/tvl12" class="dropdown-item" @click="handleItemClick('/strand-section/tvl12')">Grade 12</router-link>
-                </li>
-              </ul>
-            </li>
+            <li><router-link to="/strand-section/abm11" class="dropdown-item" @click="handleItemClick('/strand-section/abm11')">ABM 11</router-link></li>
+            <li><router-link to="/strand-section/abm12" class="dropdown-item" @click="handleItemClick('/strand-section/abm12')">ABM 12</router-link></li>
+            <li><router-link to="/strand-section/humms11" class="dropdown-item" @click="handleItemClick('/strand-section/humms11')">HUMMS 11</router-link></li>
+            <li><router-link to="/strand-section/humms12" class="dropdown-item" @click="handleItemClick('/strand-section/humms12')">HUMMS 12</router-link></li>
+            <li><router-link to="/strand-section/stem11" class="dropdown-item" @click="handleItemClick('/strand-section/stem11')">STEM 11</router-link></li>
+            <li><router-link to="/strand-section/stem12" class="dropdown-item" @click="handleItemClick('/strand-section/stem12')">STEM 12</router-link></li>
+            <li><router-link to="/strand-section/tvl11" class="dropdown-item" @click="handleItemClick('/strand-section/tvl11')">TVL 11</router-link></li>
+            <li><router-link to="/strand-section/tvl12" class="dropdown-item" @click="handleItemClick('/strand-section/tvl12')">TVL 12</router-link></li>
           </ul>
         </div>
 
@@ -166,12 +114,6 @@ export default {
         manageUser: false,
         strand: false,
       },
-      isSubDropdownVisible: {
-        humss: false,
-        stem: false,
-        abm: false,
-        tvl: false,
-      },
       selectedItem: localStorage.getItem('selectedItem') || '/adashboard',
       items: [
         { path: '/adashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
@@ -184,7 +126,6 @@ export default {
     if (this.isLoggedIn) {
       this.fetchUserProfile();
     }
-    // Ensure the selected item matches the current route
     if (this.$route.path !== this.selectedItem) {
       this.$router.push(this.selectedItem);
     }
@@ -206,21 +147,20 @@ export default {
         this.error = error.response && error.response.data.message ? error.response.data.message : 'Failed to fetch user profile';
       }
     },
-    async handlelogout() {
+    async handleLogout() {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:8000/api/logout', {}, {
+        await axios.post('http://localhost:8000/api/logout', {}, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log(response.data.message);
         localStorage.removeItem('token');
-        localStorage.removeItem('selectedItem'); // Clear selected item on logout
+        localStorage.removeItem('selectedItem');
         this.isLoggedIn = false;
         this.userProfile = null;
         this.$emit('logout');
-        this.$router.push('/login'); // Redirect to login page after logout
+        this.$router.push('/login');
       } catch (error) {
         console.error('Logout failed:', error);
       }
@@ -236,12 +176,11 @@ export default {
     },
     handleItemClick(path) {
       this.selectedItem = path;
-      localStorage.setItem('selectedItem', path); // Save selected item in local storage
-      this.selectedStrand = path.split('/') [2] || '',
+      localStorage.setItem('selectedItem', path);
       this.drawerVisible = false;
       this.isDropdownVisible.manageUser = false;
       this.isDropdownVisible.strand = false;
-      this.$router.push(path); // Ensure router navigates to the selected item
+      this.$router.push(path);
     },
     handleContentClick() {
       if (this.drawerVisible) {
@@ -251,22 +190,13 @@ export default {
       this.isDropdownVisible.manageUser = false;
       this.isDropdownVisible.strand = false;
     },
-    showSubDropdown(strand) {
-      this.isSubDropdownVisible[strand] = true;
-    },
-    hideSubDropdown(strand) {
-      this.isSubDropdownVisible[strand] = false;
-    },
   },
   beforeMount() {
     this.$router.push('/adashboard');
     this.selectedItem = '/adashboard';
-    this.selectedStrand = '';
   },
 };
 </script>
-
-
 <style scoped>
 .logo {
   font-family: 'Segoe UI Black', sans-serif;
