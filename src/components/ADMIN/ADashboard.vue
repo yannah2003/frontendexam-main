@@ -94,16 +94,13 @@
 
 
 <script>
-import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import BarChart from './adminbarchart.vue'; // Ensure correct path
 import axios from 'axios';
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 export default {
   name: 'AdminDashboard',
   components: {
-    BarChart: Bar,
+    BarChart,
   },
   data() {
     return {
@@ -111,16 +108,16 @@ export default {
       maleUsers: 0,
       teacher: 0,
       student: 0,
-      stemStudents: 50,
-      abmStudents: 30,
-      hummsStudents: 150,
-      tvlictStudents: 130,
+      stemStudents: 0,
+      abmStudents: 0,
+      hummsStudents: 0,
+      tvlictStudents: 0,
       chartData: {
         labels: ['STEM', 'ABM', 'HUMMS', 'TVL ICT'],
         datasets: [
           {
             label: 'Number of Students',
-            data: [50, 30, 150, 130],
+            data: [0, 0, 0, 0],
             backgroundColor: [
               '#28a045', // Green for STEM
               '#007bff', // Blue for ABM
@@ -161,10 +158,10 @@ export default {
     async fetchUsersCounts() {
       try {
         const response = await axios.get('http://localhost:8000/api/user-counts');
-        this.femaleUsers = response.data.femaleUsers; ///name sa laravel pinsasa
-        this.maleUsers = response.data.maleUsers;///name sa laravel pinsasa
-        this.teacher = response.data.teacher;///name sa laravel pinsasa
-        this.student = response.data.student;///name sa laravel pinsasa
+        this.femaleUsers = response.data.femaleUsers;
+        this.maleUsers = response.data.maleUsers;
+        this.teacher = response.data.teacher;
+        this.student = response.data.student;
       } catch (error) {
         console.error('Failed to fetch Users counts:', error);
       }
@@ -177,10 +174,8 @@ export default {
           }
         });
 
-        // Destructure data from API response
         const { total_stem, total_abm, total_humms, total_tvl } = response.data;
 
-        // Update the component's data
         this.stemStudents = total_stem;
         this.abmStudents = total_abm;
         this.hummsStudents = total_humms;

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import HomePageAdmin from './components/ADMIN/homepageadmin.vue';
 import AdminDashboard from './components/ADMIN/ADashboard.vue';
+import BarChart from './components/ADMIN/adminbarchart.vue';
 import RegisterUser from './components/ADMIN/AregisterUser.vue'
  import ManageUser from './components/ADMIN/AManageUser.vue';
 import ManageUserTeachers from './components/ADMIN/manageTeachers.vue';
@@ -40,6 +41,7 @@ import StudentPerformance from './components/STUDENT/Sperformance.vue';
 const routes = [
   { path: '/', component: App },
   { path: '/adminpage', component: HomePageAdmin },
+  { path: '/barchart', component: BarChart},
   { path: '/adashboard', component: AdminDashboard },
   { path: '/aregister', component: RegisterUser },
    { path: '/allusers', component: ManageUser },
