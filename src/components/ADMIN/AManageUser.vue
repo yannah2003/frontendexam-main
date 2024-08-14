@@ -14,6 +14,7 @@
             </ul>
           </div>
         </div>
+        
         <div class="col-md-4 d-flex align-items-center">
           <label for="userType" class="form-label me-2">SELECT USER TYPE:</label>
           <select v-model="selectedUserType" class="form-select" id="userType">
@@ -26,7 +27,9 @@
               <i class="bi bi-search"></i>
             </span>
             <input type="text" v-model="search" class="form-control" placeholder="Search" />
+            <i class="bi bi-clipboard2-plus-fill"></i>
           </div>
+       
         </div>
       </div>
 

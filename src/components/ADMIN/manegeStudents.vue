@@ -222,10 +222,10 @@ methods: {
       }
     })
     .then(response => {
-      console.log(response.data.message);
+      alert (response.data.message);
     })
     .catch(error => {
-      console.error('Error saving changes:', error.response ? error.response.data : error.message);
+      alert.error('Error saving changes:', error.response ? error.response.data : error.message);
     });
 
   },

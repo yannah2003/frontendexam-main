@@ -2,8 +2,7 @@
   <div v-if="isVisible">
     <nav class="navbar navbar-expand-lg">
       <div class="d-flex align-items-center">
-        <i class="bi bi-list-task fs-2" style="margin-left: 40px; margin-right: 20px;" @click="toggleDrawer"></i>
-        <h2 class="logo me-2">WISE - SHS</h2>
+        <h2>Admin Portal</h2>
       </div>
       <div class="d-flex align-items-center ms-auto">
         <h4 class="mb-0 me-3">WELCOME ADMIN!</h4>
@@ -18,7 +17,7 @@
                   NAME : {{ userProfile.lname }}
                   <br />
                 </div>
-                <button class="btn btn-danger btn-sm mt-2" @click="handlelogout">Log Out</button>
+                <button class="btn btn-danger btn-sm mt-2" @click="handleLogout">Log Out</button>
               </div>
               <div v-else>
                 <p>Loading user profile...</p>
@@ -29,14 +28,15 @@
             </div>
             <div v-else>
               <p>User not logged in.</p>
-              <!-- You might redirect to the login page or display a login form here -->
             </div>
           </div>
         </div>
       </div>
     </nav>
     <div class="d-flex">
-      <div :class="['drawer', drawerVisible ? 'd-block' : 'd-none']">
+      <div :class="['sidebar', isSidebarCollapsed ? 'collapsed' : '']">
+        <img :src="require('@/assets/newlogo.png')" class="img-fluid logo" alt="Your Image">
+
         <router-link
           v-for="(item, index) in items"
           :key="index"
@@ -50,11 +50,11 @@
             <span class="label">{{ item.label }}</span>
           </span>
         </router-link>
-        
+
         <!-- Manage User Dropdown -->
         <div class="list-group dropdown" @click="toggleDropdown('manageUser')">
           <span class="icon-label dropdown-toggle" style="cursor: pointer;">
-            <i class="bi bi-people-fill fs-4"></i> Manage User
+            <i class="bi bi-people-fill fs-4" style="padding-right: 20px;"></i> Manage User
           </span>
           <ul v-if="isDropdownVisible.manageUser" class="dropdown-menu show">
             <li><router-link to="/allusers" class="dropdown-item" @click="handleItemClick('/allusers')">All Users</router-link></li>
@@ -64,29 +64,16 @@
         </div>
 
         <!-- Strand Dropdown -->
-        <div class="list-group dropdown" @click="toggleDropdown('strand')">
-          <span class="icon-label dropdown-toggle" style="cursor: pointer;">
-            <i class="bi bi-grid-fill fs-4"></i> Strand & Section
+        <div class="list-group" @click="handleItemClick('/strand-section/abm11')">
+          <span class="icon-label dropdow">
+            <i class="bi bi-grid-fill fs-4" style="padding-right: 10px;"></i> Strand & Section
           </span>
-          <ul v-if="isDropdownVisible.strand" class="dropdown-menu show">
-            <li><router-link to="/strand-section/abm11" class="dropdown-item" @click="handleItemClick('/strand-section/abm11')">ABM 11</router-link></li>
-            <li><router-link to="/strand-section/abm12" class="dropdown-item" @click="handleItemClick('/strand-section/abm12')">ABM 12</router-link></li>
-            <li><router-link to="/strand-section/humms11" class="dropdown-item" @click="handleItemClick('/strand-section/humms11')">HUMMS 11</router-link></li>
-            <li><router-link to="/strand-section/humms12" class="dropdown-item" @click="handleItemClick('/strand-section/humms12')">HUMMS 12</router-link></li>
-            <li><router-link to="/strand-section/stem11" class="dropdown-item" @click="handleItemClick('/strand-section/stem11')">STEM 11</router-link></li>
-            <li><router-link to="/strand-section/stem12" class="dropdown-item" @click="handleItemClick('/strand-section/stem12')">STEM 12</router-link></li>
-            <li><router-link to="/strand-section/tvl11" class="dropdown-item" @click="handleItemClick('/strand-section/tvl11')">TVL 11</router-link></li>
-            <li><router-link to="/strand-section/tvl12" class="dropdown-item" @click="handleItemClick('/strand-section/tvl12')">TVL 12</router-link></li>
-          </ul>
         </div>
 
-        <div class="list-group logOut" @click="handlelogout" style="margin-top: 280px;">
-          <span class="icon-label">
-            <i class="bi bi-box-arrow-left fs-4"></i> LOG OUT
-          </span>
-        </div>
+        <!-- Chevron Icon to Collapse/Expand Sidebar -->
+        <i @click="toggleSidebar" class="bi" :class="isSidebarCollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
       </div>
-      <div class="content">
+      <div :class="['content', isSidebarCollapsed ? 'collapsed' : '']">
         <router-view></router-view>
       </div>
     </div>
@@ -114,12 +101,7 @@ export default {
         manageUser: false,
         strand: false,
       },
-      isSubDropdownVisible: {
-        humss: false,
-        stem: false,
-        abm: false,
-        tvl: false,
-      },
+      isSidebarCollapsed: false, // New data property for sidebar state
       selectedItem: localStorage.getItem('selectedItem') || '/adashboard',
       items: [
         { path: '/adashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
@@ -132,7 +114,6 @@ export default {
     if (this.isLoggedIn) {
       this.fetchUserProfile();
     }
-    // Ensure the selected item matches the current route
     if (this.$route.path !== this.selectedItem) {
       this.$router.push(this.selectedItem);
     }
@@ -154,7 +135,7 @@ export default {
         this.error = error.response && error.response.data.message ? error.response.data.message : 'Failed to fetch user profile';
       }
     },
-    async handlelogout() {
+    async handleLogout() {
       try {
         const token = localStorage.getItem('token');
         const response = await axios.post('http://localhost:8000/api/logout', {}, {
@@ -164,17 +145,14 @@ export default {
         });
         console.log(response.data.message);
         localStorage.removeItem('token');
-        localStorage.removeItem('selectedItem'); // Clear selected item on logout
+        localStorage.removeItem('selectedItem');
         this.isLoggedIn = false;
         this.userProfile = null;
         this.$emit('logout');
-        this.$router.push('/login'); // Redirect to login page after logout
+        this.$router.push('/login');
       } catch (error) {
         console.error('Logout failed:', error);
       }
-    },
-    toggleDrawer() {
-      this.drawerVisible = !this.drawerVisible;
     },
     togglePopover() {
       this.isPopoverVisible = !this.isPopoverVisible;
@@ -184,119 +162,100 @@ export default {
     },
     handleItemClick(path) {
       this.selectedItem = path;
-      localStorage.setItem('selectedItem', path); // Save selected item in local storage
-      this.selectedStrand = path.split('/') [2] || '',
-      this.drawerVisible = false;
-      this.isDropdownVisible.manageUser = false;
-      this.isDropdownVisible.strand = false;
-      this.$router.push(path); // Ensure router navigates to the selected item
+      localStorage.setItem('selectedItem', path);
+      this.$router.push(path);
     },
-    handleContentClick() {
-      if (this.drawerVisible) {
-        this.drawerVisible = false;
-      }
-      this.isPopoverVisible = false;
-      this.isDropdownVisible.manageUser = false;
-      this.isDropdownVisible.strand = false;
-    },
-    showSubDropdown(strand) {
-      this.isSubDropdownVisible[strand] = true;
-    },
-    hideSubDropdown(strand) {
-      this.isSubDropdownVisible[strand] = false;
+    toggleSidebar() {
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
     },
   },
   beforeMount() {
     this.$router.push('/adashboard');
     this.selectedItem = '/adashboard';
-    this.selectedStrand = '';
   },
 };
 </script>
 
 
 <style scoped>
-.logo {
-  font-family: 'Segoe UI Black', sans-serif;
-  color: white;
-  text-shadow: 1px 1px 2px black;
-  font-size: 40px;
+h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(14, 1, 1);
+ 
+  margin-left: 270px;
+ 
 }
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Horizontal offset, vertical offset, blur radius, spread radius, and color */
+}
+
 .modal-content {
-  border: 2px solid #add8e6; /* Green border */
-  border-radius: 10px; /* Rounded corners */
+  border: 2px solid #add8e6;
+  border-radius: 10px;
 }
 
 .modal-header {
-  background-color:#add8e6; /* Green header background */
-  color: #130404; /* White text color */
-  border-bottom: 1px solid #ddd; /* Light border below header */
+  background-color: #add8e6;
+  color: #130404;
+  border-bottom: 1px solid #ddd;
 }
 
 .modal-title {
-  font-size: 1.25rem; /* Larger font size for the title */
-  font-weight: bold;
+  font-size: 1.25rem;
 }
 
-
-.modal-dialog.modal-md {
-  max-width: 50%;
+.modal-body {
+  background-color: #f7f7f7;
 }
 
-.navbar {
-  background-color: #add8e6;;
-}
-
-.drawer {
-  height: auto;
+.sidebar {
   width: 250px;
-  padding: 10px;
-  background-color: white;
-  border-right: 1px solid #ddd;
+  background-color: #0e68bc;
+
+  height: 100vh; /* Full viewport height */
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
-.drawer .list-group {
-  color: #333;
-  text-decoration: none;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin: 10px 0;
+.list-group {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
   padding: 10px;
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-  font-weight: bold;
+  border: #130404;
+  color:white ;
+  border-bottom: 2px solid #ccc; /* Light gray border color */
+}
+
+.dropdown {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+
+}
+
+.icon-label {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
-.drawer .list-group.active,
-.drawer .list-group:hover,
-.drawer .logOut:hover {
-  background-color: #4893ac;
-  color: white;
-}
-
-.drawer .icon-label {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.drawer .icon-label i {
-  margin-right: 10px;
-}
-
-.drawer .icon-label .label {
-  flex: 1;
+.label {
+  margin-left: 10px;
 }
 
 .content {
-  flex-grow: 1;
-  min-height: 100vh;
-  width: 100%;
-  background-color: white;
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+  background-color: #f5f5f5;
 }
+
+
 
 .popover {
   position: absolute;
@@ -322,23 +281,6 @@ export default {
   transform: translateX(0);
 }
 
-.popover-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.field-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px; /* Adjust as needed */
-}
-
-.field-container i {
-  margin-left: 10px; /* Adjust spacing as needed */
-  cursor: pointer;
-}
-
 .popover-arrow {
   position: absolute;
   width: 0;
@@ -351,44 +293,101 @@ export default {
   transform: translateY(-50%);
 }
 
-.dropdown-menu {
-  background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
+.popover.show {
   display: block;
+}
+
+.dropdown-menu {
+  display: block;
+  position: static;
+  float: none;
+  margin: 5px;
+  background-color: #fff;
+  font-size: 15px;
+
 }
 
 .dropdown-item {
-  padding: 0.25rem 1.5rem;
-  font-size: 1rem;
-  color: #212529;
-  text-decoration: none;
-  display: block;
-  clear: both;
-  font-weight: 400;
-  white-space: nowrap;
-  background-color: transparent;
-  border: 0;
+  font-size: 18px;
+  padding: 5px 10px;
 }
 
 .dropdown-item:hover {
-  background-color: rgba(0, 145, 7, 0.1);
+  background-color: #f5f5f5;
 }
 
-.container {
-  margin-left: 0;
+.logOut {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+
+  margin-top: 10px;
+  cursor: pointer;
+}
+/* Sidebar Styling */
+.sidebar {
+  width: 250px;
+  background-color: #0e68bc;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  overflow: hidden; /* Hide overflow content when collapsed */
 }
 
-.container2 {
-  margin-right: 0;
+.sidebar.collapsed {
+  width: 80px; /* Width of collapsed sidebar */
 }
+
+/* Sidebar Content */
+.sidebar .logo {
+  width: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar .list-group {
+  margin-top: 20px;
+}
+
+.sidebar .list-group .icon-label {
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* Prevent text wrapping */
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .icon-label .label {
+  display: none; /* Hide text when collapsed */
+}
+
+.sidebar.collapsed .icon-label i {
+  font-size: 1.5rem; /* Adjust icon size if needed */
+}
+
+/* Chevron Icon for Toggling Sidebar */
+.bi-chevron-left, .bi-chevron-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: wheat;
+}
+
+/* Content Area Styling */
+.content {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.content.collapsed {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+}
+
 </style>
-
-
-
-
