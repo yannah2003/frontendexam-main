@@ -3,43 +3,48 @@
     <HomePageAdmin v-if="isAdmin" @logout="handleLogout" />
     <Teacher_homepage v-else-if="isTeacher" @logout="handleLogout" />
     <Student_homepage v-else-if="isStudent" @logout="handleLogout" />
-    <div v-else class="container-fluid vh-100 d-flex align-items-center justify-content-center">
-      <div class="card main-card">
-        <div class="row w-100 h-100">
-          <div class="col-lg-6 d-flex align-items-center justify-content-center">
-            <img src="./assets/newlogo.png" class="img-fluid logo" alt="Your Image">
+    <div v-else class="d-flex vh-100">
+      <div class="left-side d-flex align-items-center justify-content-center">
+        <img src="./assets/newlogo.png" class="img-fluid logo" alt="Your Image">
+      </div>
+      <div class="right-side d-flex align-items-center justify-content-center">
+        <form class="login-form d-flex flex-column justify-content-center" @submit.prevent="handleSubmit">
+          <h3 class="form-title text-center">WISE-SHS</h3>
+          <p class="welcome-message text-center">Welcome! Please login to your account.</p>
+
+          <div class="form-group position-relative">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" v-model="email" required>
           </div>
-          <div class="col-lg-6 d-flex align-items-center justify-content-center">
-            <div class="card login-card">
-              <div class="card-body d-flex flex-column justify-content-center">
-                <h3 class="card-title text-center">WISE-SHS</h3>
-                <p class="text-center welcome-message">Welcome! Please login to your account.</p>
-                <form @submit.prevent="handleSubmit">
-                  <div class="form-group position-relative">
-                    <label for="email">Email:</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" v-model="email" required>
-                  </div>
 
-                  <div class="form-group position-relative">
-                    <label for="password">Password:</label>
-                    <input :type="showPassword ? 'text' : 'password'" class="form-control" id="password" placeholder="Enter password" v-model="password" required>
-                    <i :class="passwordFieldIcon" class="password-toggle position-absolute" @click="togglePassword"></i>
-                  </div>
+          <div class="form-group position-relative">
+            <label for="password">Password:</label>
+            <input :type="showPassword ? 'text' : 'password'" class="form-control" id="password" placeholder="Enter password" v-model="password" required>
+            <i :class="passwordFieldIcon" class="password-toggle position-absolute" @click="togglePassword"></i>
+          </div>
 
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="rememberMe">
-                      <label class="form-check-label" for="rememberMe">Remember Me</label>
-                    </div>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
-                  </div>
-
-                  <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block btn-custom-width">Log In</button>
-                  </div>
-                </form>
-              </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="rememberMe">
+              <label class="form-check-label" for="rememberMe">Remember Me</label>
             </div>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-custom-width">Log In</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for loading spinner -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Verifying user, please wait...</p>
           </div>
         </div>
       </div>
@@ -50,6 +55,7 @@
 <script>
 import axios from 'axios';
 import router from '@/router';
+import { Modal } from 'bootstrap';
 
 import HomePageAdmin from './components/ADMIN/homepageadmin.vue';
 import Teacher_homepage from './components/TEACHER/teacherhomepage.vue';
@@ -76,6 +82,11 @@ export default {
   methods: {
     async handleSubmit() {
       try {
+        // Show loading modal
+        const modalElement = document.getElementById('loadingModal');
+        const modal = new Modal(modalElement);
+        modal.show();
+
         const response = await axios.post('http://127.0.0.1:8000/api/login', {
           email: this.email,
           password: this.password
@@ -105,6 +116,11 @@ export default {
       } catch (error) {
         console.error('Login failed:', error);
         this.errorMessage = 'Login failed. Please check your credentials.';
+      } finally {
+        // Hide loading modal
+        const modalElement = document.getElementById('loadingModal');
+        const modal = Modal.getInstance(modalElement);
+        modal.hide();
       }
     },
     updateUserType(usertype) {
@@ -139,12 +155,10 @@ export default {
 
     if (token && usertype) {
       this.updateUserType(usertype);
-      // Optionally, validate the token with the backend here
-      // If validation fails, clear the token and redirect to login
       if (savedRoute) {
         this.$router.push(savedRoute);
       } else {
-        this.$router.push('/'); // Fallback to a default route if no saved route
+        this.$router.push('/');
       }
     }
   }
@@ -154,87 +168,57 @@ export default {
 <style scoped>
 html, body {
   height: 100%;
-  background-color: #ffffff;
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
-.container {
+.d-flex {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
 }
 
-
-
-.main-card {
-  width: 100%;
-  max-width: 1500px;
-  height: 95%;
-  max-height: 800px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  background-color: #add8e6; /* Light blue background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+.left-side {
+  width: 50%;
+  background-image: url('./assets/back1.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
 }
 
-.login-card {
-  width: 80%;
-  height: 75%; /* Adjusted to occupy more space within the main card */
-  max-width: 700px;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.right-side {
+  width: 50%;
   background-color: #ffffff;
-  padding: 30px; /* Increased padding for better spacing */
-}
-
-.card-body {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .logo {
-  max-width: 500px; /* Increased size of the logo */
+  max-width: 500px; /* Adjusted size of the logo */
 }
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+.login-form {
+  width: 90%;
+  max-width: 600px;
+  max-height: 900px;
+
+  
+  padding: 50px;
+ 
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn-custom-width {
-  width: 100%; /* Made the button occupy the full width */
-  max-width: 500px; /* Set a maximum width */
-}
-
-h3 {
+.form-title {
   font-family: fantasy;
-  font-size: 36px; /* Increased font size for better visibility */
+  font-size: 36px;
   font-weight: 300;
   margin-bottom: 20px;
 }
 
 .welcome-message {
-  font-family: 'Nunito', sans-serif ;
-  font-size: 18px; /* Increased font size for better readability */
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
   font-weight: 300;
-  margin-bottom: 30px; /* Increased space between the message and the form */
+  margin-bottom: 30px;
 }
 
 .form-group {
-  margin-bottom: 20px; /* Increased space between form groups */
+  margin-bottom: 20px;
 }
 
 .password-toggle {
@@ -254,7 +238,16 @@ h3 {
   text-decoration: underline;
 }
 
-.position-relative {
-  position: relative;
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-custom-width {
+  width: 100%;
 }
 </style>

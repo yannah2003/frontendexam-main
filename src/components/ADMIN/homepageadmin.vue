@@ -35,7 +35,7 @@
     </nav>
     <div class="d-flex">
       <div :class="['sidebar', isSidebarCollapsed ? 'collapsed' : '']">
-        <img :src="require('@/assets/newlogo.png')" class="img-fluid logo" alt="Your Image">
+        <img :src="require('@/assets/i5.png')" class="img-fluid logo" alt="Your Image">
 
         <router-link
           v-for="(item, index) in items"
