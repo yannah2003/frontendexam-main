@@ -185,6 +185,7 @@ export default {
         await axios.post('http://localhost:8000/api/register', this.formData);
         alert('User registered successfully');
         this.isModalVisible = false;
+
         // Reset form data
         this.formData = {
           idnumber: '',
@@ -197,6 +198,8 @@ export default {
           Mobile_no: '',
           password: ''
         };
+        // redirect sa showing ng data 
+        this.$router.push('/allusers');
       } catch (error) {
         alert('Error registering user: ' + error.message);
       }

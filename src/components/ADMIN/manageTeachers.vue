@@ -52,7 +52,14 @@
           <tr v-for="(item, index) in sortedFilteredItems" :key="item.lrn">
             <td class="text-center">{{ index + 1 }}</td>
             <td class="text-center">{{ item.idnumber }}</td>
-            <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
+            <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}
+              <div>
+                <span v-if="isActive" class="status-active">Active</span>
+                <span v-else class="status-inactive">Inactive</span>
+                <button @click="toggleStatus">Change</button>
+              </div>
+
+            </td>
             <td class="text-center">{{ item.sex }}</td>
             <td class="text-center">{{ item.email }}</td>
             <td class="text-center">{{ item.teacher_Position }}</td>
@@ -158,7 +165,8 @@ export default {
       positions: ['Teacher 1', 'Teacher 2', 'Teacher III'],
       serverItems: [],
       currentUser: {},  // Holds the user data being edited
-      showPassword: false  // Track password visibility state
+      showPassword: false,  // Track password visibility state
+      isActive: true
     };
   },
   computed: {
@@ -234,6 +242,9 @@ export default {
     },
     sortItems(direction) {
       this.sortDirection = direction;
+    },
+    toggleStatus() {
+      this.isActive = !this.isActive; // Toggles the value of isActive
     }
   },
   mounted() {
@@ -246,6 +257,15 @@ export default {
 .container-fluid {
   margin-top: 10px;
   padding: 20px;
+}
+.status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: red;
+  font-weight: bold;
 }
 
 h4 {

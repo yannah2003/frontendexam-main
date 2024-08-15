@@ -27,14 +27,17 @@
               <i class="bi bi-search"></i>
             </span>
             <input type="text" v-model="search" class="form-control" placeholder="Search" />
-            <i class="bi bi-clipboard2-plus-fill"></i>
+            <router-link to="/aregister">
+              <i class="bi bi-clipboard2-plus-fill register"></i>
+            </router-link>
+
           </div>
        
         </div>
       </div>
 
       <table class="table table-bordered table-hover">
-        <thead class="table-success">
+        <thead class="table-info">
           <tr>
             <th scope="col" class="text-center">No.</th>
             <th scope="col" class="text-center">LRN</th>
@@ -58,8 +61,18 @@
             <td class="text-center">{{ formatDate(item.created_at) }}</td>
             <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
-              <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
-              <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
+              <div class="icon-container">
+                <span class="icon-box reset-box">
+                  <i class="bi bi-key-fill custom-icon" @click="openModal(item)"></i>
+                </span>
+                <span class="icon-box edit-box">
+                  <i class="bi bi-pencil-square custom-icon" @click="openModal(item)"></i>
+                </span>
+                <span class="icon-box delete-box">
+                  <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
+                </span>
+              </div>
+
             </td>
           </tr>
         </tbody>
@@ -226,7 +239,11 @@ export default {
 <style scoped>
 .container-fluid {
   margin-top: 10px;
-  padding: 20px;
+ 
+}
+tbody{
+  font-size: 15px;
+
 }
 
 h4 {
@@ -240,14 +257,43 @@ h4 {
 
 .custom-icon {
   cursor: pointer;
-  color: black;
-  font-size: 25px;
+  color: rgb(255, 255, 255);
+  font-size: 18px;
 }
 
-.custom-icon:hover {
-  color: rgb(18, 108, 211);
-  font-size: 30px;
+.icon-container {
+  display: flex;
+  gap: 10px; /* Space between the boxes */
 }
+.register{
+  font-size: 30px; padding-left: 20px;
+  color: #495057;
+
+}
+.icon-box {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.reset-box {
+  background-color: #efd305; 
+  color: white; /* White icon color */
+}
+.edit-box {
+  background-color: #0f64dc; 
+  color: white; /* White icon color */
+}
+
+.delete-box {
+  background-color: #e50c0c; /* Red background */
+  color: white; /* White icon color */
+}
+
+
 
 .form-select {
   width: 200px;

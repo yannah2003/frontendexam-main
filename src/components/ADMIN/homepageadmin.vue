@@ -64,7 +64,7 @@
         </div>
 
         <!-- Strand Dropdown -->
-        <div class="list-group" @click="handleItemClick('/strand-section/abm11')">
+        <div class="list-group" @click="handleItemClick('/strand-section')">
           <span class="icon-label dropdow">
             <i class="bi bi-grid-fill fs-4" style="padding-right: 10px;"></i> Strand & Section
           </span>
@@ -105,7 +105,7 @@ export default {
       selectedItem: localStorage.getItem('selectedItem') || '/adashboard',
       items: [
         { path: '/adashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-fill fs-4' },
-        { path: '/aregister', label: 'Register Users', icon: 'bi bi-person-plus-fill fs-4' },
+       
       ],
     };
   },
