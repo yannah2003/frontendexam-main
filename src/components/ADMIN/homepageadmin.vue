@@ -2,7 +2,9 @@
   <div v-if="isVisible">
     <nav class="navbar navbar-expand-lg">
       <div class="d-flex align-items-center">
-        <h2>Admin Portal</h2>
+        <div :class="['title-container', isSidebarCollapsed ? 'collapsed' : '']">
+          <h2>Admin Portal</h2>
+        </div>
       </div>
       <div class="d-flex align-items-center ms-auto">
         <h4 class="mb-0 me-3">WELCOME ADMIN!</h4>
@@ -79,6 +81,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -185,6 +188,7 @@ h2 {
   margin-left: 270px;
  
 }
+
 .navbar {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Horizontal offset, vertical offset, blur radius, spread radius, and color */
 }
@@ -206,18 +210,6 @@ h2 {
 
 .modal-body {
   background-color: #f7f7f7;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #0e68bc;
-
-  height: 100vh; /* Full viewport height */
-  padding: 20px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
 }
 
 .list-group {
@@ -252,9 +244,15 @@ h2 {
   margin-left: 250px;
   padding: 20px;
   width: calc(100% - 250px);
-  background-color: #f5f5f5;
+  
+}
+.title-container {
+  transition: margin-left 0.3s ease;
 }
 
+.title-container.collapsed h2 {
+  margin-left: 100px;
+}
 
 
 .popover {
@@ -324,7 +322,7 @@ h2 {
   margin-top: 10px;
   cursor: pointer;
 }
-/* Sidebar Styling */
+
 .sidebar {
   width: 250px;
   background-color: #0e68bc;

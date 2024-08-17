@@ -66,8 +66,17 @@
             <td class="text-center">{{ formatDate(item.created_at) }}</td>
             <td class="text-center">{{ formatDate(item.updated_at) }}</td>
             <td class="text-center">
-              <i class="bi bi-pencil-square custom-icon me-2" @click="openModal(item)"></i>
-              <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
+              <div class="icon-container">
+                <span class="icon-box reset-box">
+                  <i class="bi bi-key-fill custom-icon" @click="openModal(item)"></i>
+                </span>
+                <span class="icon-box edit-box">
+                  <i class="bi bi-pencil-square custom-icon" @click="openModal(item)"></i>
+                </span>
+                <span class="icon-box delete-box">
+                  <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
+                </span>
+              </div>
             </td>
           </tr>
         </tbody>

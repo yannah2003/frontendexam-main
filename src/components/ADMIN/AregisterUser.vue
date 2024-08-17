@@ -20,11 +20,11 @@
         <div class="col-md-4">
           <label class="form-label d-block">Gender:</label>
           <div class="form-check form-check-inline">
-            <input v-model="formData.sex" class="form-check-input" type="radio" name="sex" id="male" value="male" required>
+            <input v-model="formData.sex" class="form-check-input" type="radio" name="sex" id="male" value="m" required>
             <label class="form-check-label" for="male">Male</label>
           </div>
           <div class="form-check form-check-inline">
-            <input v-model="formData.sex" class="form-check-input" type="radio" name="sex" id="female" value="female" required>
+            <input v-model="formData.sex" class="form-check-input" type="radio" name="sex" id="female" value="f" required>
             <label class="form-check-label" for="female">Female</label>
           </div>
         </div>
@@ -94,7 +94,7 @@
     </div>
 
     <!-- Modal -->
-    <div v-if="isModalVisible" class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div v-if="isModalVisible" class="modal fade show d-block" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -182,7 +182,18 @@ export default {
     },
     async saveUser() {
       try {
-        await axios.post('http://localhost:8000/api/register', this.formData);
+        let apiUrl;
+        let redirectRoute;
+
+        if (this.formData.usertype === 'teacher') {
+          apiUrl = 'http://localhost:8000/api/register-teacher';
+          redirectRoute = '/teacher-dashboard';
+        } else if (this.formData.usertype === 'student') {
+          apiUrl = 'http://localhost:8000/api/register-student';
+          redirectRoute = '/student-dashboard';
+        }
+
+        await axios.post(apiUrl, this.formData);
         alert('User registered successfully');
         this.isModalVisible = false;
 
@@ -198,8 +209,8 @@ export default {
           Mobile_no: '',
           password: ''
         };
-        // redirect sa showing ng data 
-        this.$router.push('/allusers');
+        // redirect to showing all users
+        this.$router.push(redirectRoute);
       } catch (error) {
         alert('Error registering user: ' + error.message);
       }
@@ -207,6 +218,7 @@ export default {
   }
 };
 </script>
+
    
 
 <style scoped>
