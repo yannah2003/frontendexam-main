@@ -151,8 +151,8 @@ export default {
     },
   },
   mounted() {
-    this.fetchUsersCounts();
-    this.fetchDataStrand();
+    // this.fetchUsersCounts();
+    // this.fetchDataStrand();
   },
   methods: {
     async fetchUsersCounts() {
