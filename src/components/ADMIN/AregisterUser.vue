@@ -186,10 +186,10 @@ export default {
         let redirectRoute;
 
         if (this.formData.usertype === 'teacher') {
-          apiUrl = 'http://localhost:8000/api/register-teacher';
+          apiUrl = 'http://localhost:8000/api/registerTeacher';
           redirectRoute = '/teacher-dashboard';
         } else if (this.formData.usertype === 'student') {
-          apiUrl = 'http://localhost:8000/api/register-student';
+          apiUrl = 'http://localhost:8000/api/registerstudent';
           redirectRoute = '/student-dashboard';
         }
 

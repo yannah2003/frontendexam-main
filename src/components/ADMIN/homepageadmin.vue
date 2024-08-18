@@ -16,7 +16,7 @@
               <div v-if="userProfile">
                 <div class="popover-body">
                   ID number: {{ userProfile.idnumber }}
-                  NAME : {{ userProfile.lname }}
+                  NAME : {{ userProfile.lname }}, {{ userProfile.fname }} {{ userProfile.mname }}
                   <br />
                 </div>
                 <button class="btn btn-danger btn-sm mt-2" @click="handleLogout">Log Out</button>
