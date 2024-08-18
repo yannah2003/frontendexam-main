@@ -4,18 +4,6 @@
       <h4 class="text-center">Manage ALL Users</h4><br>
       <div class="row mb-4 justify-content-end align-items-center">
         <div class="col-md-4 d-flex align-items-center">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-              Sort By: {{ sortDirection === 'asc' ? 'A -> Z' : 'Z -> A' }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <li><button class="dropdown-item" type="button" @click="sortItems('asc')">A -> Z</button></li>
-              <li><button class="dropdown-item" type="button" @click="sortItems('desc')">Z -> A</button></li>
-            </ul>
-          </div>
-        </div>
-        
-        <div class="col-md-4 d-flex align-items-center">
           <label for="userType" class="form-label me-2">SELECT USER TYPE:</label>
           <select v-model="selectedUserType" class="form-select" id="userType">
             <option v-for="type in userTypes" :key="type" :value="type">{{ type }}</option>
@@ -27,12 +15,10 @@
               <i class="bi bi-search"></i>
             </span>
             <input type="text" v-model="search" class="form-control" placeholder="Search" />
-            <router-link to="/aregister">
+            <router-link to="/aregister" title="Add Record">
               <i class="bi bi-clipboard2-plus-fill register"></i>
             </router-link>
-
           </div>
-       
         </div>
       </div>
 
@@ -51,8 +37,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in sortedFilteredItems" :key="item.idnumber">
-            <td class="text-center">{{ index + 1 }}</td>
+          <tr v-for="(item, index) in paginatedItems" :key="item.idnumber">
+            <td class="text-center">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
             <td class="text-center">{{ item.idnumber }}</td>
             <td class="text-center">{{ item.lname }}, {{ item.fname }} {{ item.mname }}</td>
             <td class="text-center">{{ item.sex }}</td>
@@ -72,11 +58,25 @@
                   <i class="bi bi-person-x-fill custom-icon" @click="removeUser(item)"></i>
                 </span>
               </div>
-
             </td>
           </tr>
         </tbody>
       </table>
+
+      <!-- Basic Pagination Controls -->
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" :class="{ active: page === currentPage }" v-for="page in totalPages" :key="page">
+            <a class="page-link" href="#" @click.prevent="changePage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+            <a class="page-link" href="#" @click.prevent="changePage(currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
     <div v-if="showModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
@@ -145,7 +145,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import moment from 'moment';
@@ -158,7 +157,8 @@ export default {
       showModal: false,
       selectedUserType: '',
       showPassword: false,
-      sortDirection: 'asc', // default sort direction
+      itemsPerPage: 10,
+      currentPage: 1,
       userTypes: ['student', 'teacher'],
       serverItems: [],
       currentUser: {}  // Holds the user data being edited
@@ -179,24 +179,20 @@ export default {
         );
       });
     },
-    sortedFilteredItems() {
-      const sortedItems = [...this.filteredItems].sort((a, b) => {
-        const comparison = a.lname.localeCompare(b.lname); //// a.lname.localeCompare(b.lname) compares the lname property of two items (a and b) for sorting.
-        return this.sortDirection === 'asc' ? comparison : -comparison;
-      });
-      return sortedItems;
+
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.filteredItems.slice(start, end);
+    },
+    totalPages() {
+      return Math.ceil(this.filteredItems.length / this.itemsPerPage);
     }
   },
   methods: {
-    fetchData() {
-      axios.get('http://localhost:8000/api/users')
-        .then(response => {
-          this.serverItems = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    },
+    formatDate(date) {
+    return moment(date).format('YYYY/M/D [time] h:mm a');
+  },
     openModal(user) {
       this.currentUser = { ...user };
       this.showModal = true;
@@ -211,8 +207,26 @@ export default {
           console.error('Error saving changes:', error);
         });
     },
-    removeUser(user) {
-      axios.delete(`http://localhost:8000/api/users/${user.id}`)
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    changePage(page) {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+      }
+    },
+    fetchData() {
+      axios.get('http://localhost:8000/api/users')
+        .then(response => {
+          this.serverItems = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
+    
+    removeUser() {
+      axios.delete('http://localhost:8000/api/users/${user.id}')
         .then(() => {
           this.fetchData();
         })
@@ -220,21 +234,14 @@ export default {
           console.error('Error deleting user:', error);
         });
     },
-    togglePasswordVisibility() {
-      this.showPassword = !this.showPassword;
-    },
-    formatDate(date) {
-      return moment(date).format('YYYY/M/D [time] h:mm a');
-    },
-    sortItems(direction) {
-      this.sortDirection = direction;
-    }
+    
   },
   mounted() {
     this.fetchData();
-  },
+  }
 };
 </script>
+
 
 <style scoped>
 .container-fluid {
@@ -315,9 +322,6 @@ h4 {
   font-weight: bold;
 }
 
-.btn-close {
-  filter: invert(1); /* White close button icon */
-}
 
 .modal-body {
   background-color: #f0f8ff; /* Alice blue background for form */
