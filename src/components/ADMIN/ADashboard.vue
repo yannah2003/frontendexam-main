@@ -38,7 +38,7 @@
             <div class="boxes">
               <center>
                 <h4>{{ hummsStudents }}</h4>
-                <span class="label">TOTAL NUMBER OF <br /><b>HUMMS</b> STUDENTS</span>
+                <span class="label">TOTAL NUMBER fOF <br /><b>HUMMS</b> STUDENTS</span>
               </center>
             </div>
           </div>
